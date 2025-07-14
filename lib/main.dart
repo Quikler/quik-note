@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage>
       ),
       appBar: AppBar(
         flexibleSpace: AppBarWidget(),
-        toolbarHeight: 130,
+        toolbarHeight: 180,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:quik_note/widgets/note_button.dart';
 
 import '../svgs/common.dart';
 
@@ -18,6 +19,7 @@ class AppBarWidget extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Column(
+        spacing: 24,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -41,7 +43,6 @@ class AppBarWidget extends StatelessWidget {
                       border: InputBorder.none,
                       hintText: "Search Note",
                       hintStyle: TextStyle(color: Colors.grey),
-                      fillColor: Colors.red,
                     ),
                   ),
                 ),
@@ -60,9 +61,13 @@ class AppBarWidget extends StatelessWidget {
               ],
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 40,
+            children: [Expanded(child: NoteButton())],
+          ),
         ],
       ),
-      //title: Text(widget.title),
     );
   }
 }
