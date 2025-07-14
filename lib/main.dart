@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:quik_note/widgets/app_bar.dart';
 
 import 'data/db.dart';
 import 'forms/create_note_form.dart';
 import 'models/note.dart';
+import 'svgs/common.dart';
 import 'widgets/note.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -84,8 +87,9 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ),
       appBar: AppBar(
+        flexibleSpace: AppBarWidget(),
+        toolbarHeight: 130,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
       ),
       body: Container(
         margin: EdgeInsets.all(16),
