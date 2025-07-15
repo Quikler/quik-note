@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 
 import 'data/db.dart';
 import 'forms/create_note_form.dart';
 import 'models/note.dart';
-import 'svgs/common.dart';
 import 'widgets/note.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -27,7 +25,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        //scaffoldBackgroundColor: Colors.black,
+        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: MyHomePage(key: homePageStateKey, title: 'quik-note'),
     );
@@ -76,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Colors.red,
       bottomNavigationBar: Container(
         color: Colors.blue,
         child: TabBar(
@@ -86,30 +86,46 @@ class _MyHomePageState extends State<MyHomePage>
           ],
         ),
       ),
-      appBar: AppBar(
-        flexibleSpace: AppBarWidget(),
-        toolbarHeight: 180,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      //appBar: AppBar(
+      //flexibleSpace: AppBarWidget(),
+      //toolbarHeight: 180,
+      //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //),
       body: Container(
-        margin: EdgeInsets.all(16),
-        child: TabBarView(
-          controller: tabController,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: notes.map((n) {
-                return NoteWidget(
-                  id: n.id,
-                  title: n.title,
-                  content: n.content,
-                  creationTime: n.creationTime,
-                  onNoteDelete: _handleDeleteNote,
-                );
-              }).toList(),
+        alignment: Alignment.topCenter,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Color(0xFFB083FF)],
+          ),
+        ),
+        child: Column(
+          children: [
+            Align(alignment: Alignment.topCenter, child: AppBarWidget()),
+            Container(
+              margin: EdgeInsets.all(16),
+              height: 300,
+              child: TabBarView(
+                controller: tabController,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: notes.map((n) {
+                      return NoteWidget(
+                        id: n.id,
+                        title: n.title,
+                        content: n.content,
+                        creationTime: n.creationTime,
+                        onNoteDelete: _handleDeleteNote,
+                      );
+                    }).toList(),
+                  ),
+                  CreateNoteForm(),
+                ],
+              ),
             ),
-            CreateNoteForm(),
           ],
         ),
       ),
