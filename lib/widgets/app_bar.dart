@@ -12,7 +12,7 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        //borderRadius: BorderRadius.all(Radius.circular(55)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(55)),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
