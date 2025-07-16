@@ -4,8 +4,11 @@ import 'package:quik_note/widgets/app_bar.dart';
 import 'data/db.dart';
 import 'forms/create_note_form.dart';
 import 'models/note.dart';
+import 'widgets/add_note_card.dart';
 import 'widgets/note.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import 'widgets/note_card.dart';
 
 Future main() async {
   // Initialize FFI
@@ -103,27 +106,66 @@ class _MyHomePageState extends State<MyHomePage>
         child: Column(
           children: [
             Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-            Container(
-              margin: EdgeInsets.all(16),
-              height: 300,
-              child: TabBarView(
-                controller: tabController,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: notes.map((n) {
-                      return NoteWidget(
-                        id: n.id,
-                        title: n.title,
-                        content: n.content,
-                        creationTime: n.creationTime,
-                        onNoteDelete: _handleDeleteNote,
-                      );
-                    }).toList(),
-                  ),
-                  CreateNoteForm(),
-                ],
+            Expanded(
+              child: Container(
+                //height: MediaQuery.of(context).size.height,
+                //margin: EdgeInsets.all(16),
+                margin: EdgeInsets.only(
+                  top: 40,
+                  bottom: 0,
+                  left: 32,
+                  right: 32,
+                ),
+                child: TabBarView(
+                  controller: tabController,
+                  children: <Widget>[
+                    ListView(
+                      //crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 40),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              spacing: 40,
+                              children: [
+                                Expanded(child: NoteCard()),
+                                Expanded(child: NoteCard()),
+                              ],
+                            ),
+                          ),
+                        ),
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            spacing: 40,
+                            children: [
+                              Expanded(child: NoteCard()),
+                              Expanded(child: AddNoteCard()),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    //Column(
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    //children: notes.map((n) {
+                    //return NoteWidget(
+                    //id: n.id,
+                    //title: n.title,
+                    //content: n.content,
+                    //creationTime: n.creationTime,
+                    //onNoteDelete: _handleDeleteNote,
+                    //);
+                    //}).toList(),
+                    //),
+                    CreateNoteForm(),
+                  ],
+                ),
               ),
             ),
           ],
