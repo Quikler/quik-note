@@ -11,17 +11,17 @@ class AppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 32, bottom: 40, left: 32, right: 32),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(55)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [Color(0xff5E00FF), Color(0x59380099)],
         ),
       ),
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Column(
-        spacing: 24,
+        spacing: 32,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
