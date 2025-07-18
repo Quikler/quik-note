@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 
 class NoteCard extends StatefulWidget {
-  const NoteCard({super.key});
+  const NoteCard({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.creationTime,
+    required this.onNoteDelete,
+  });
+
+  final int? id;
+  final String title;
+  final String? content;
+  final DateTime creationTime;
+  final Function(int? id) onNoteDelete;
 
   @override
-  State<StatefulWidget> createState() => _NoteCardState();
+  State<StatefulWidget> createState() {
+    return _NoteCardState();
+  }
 }
 
 class _NoteCardState extends State<NoteCard> {
@@ -39,22 +54,30 @@ class _NoteCardState extends State<NoteCard> {
               child: Icon(
                 Icons.shopping_cart,
                 color: Color(0xFFFBFBF9),
-                size: 64,
+                size: 48,
               ),
             ),
           ),
           Column(
+            spacing: 6,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Shoping List For August",
+                widget.title,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   color: Color(0xFF380099),
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              Text("Aug 21, 2021", style: TextStyle(fontSize: 10)),
+              Text(
+                "Aug 21, 2021",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFA3A3A3),
+                ),
+              ),
             ],
           ),
         ],

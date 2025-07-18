@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 
 import 'data/db.dart';
@@ -47,10 +48,31 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   List<Note> notes = [];
 
+  List<IntrinsicHeight> widgetNotes = [];
+
   void _loadNotes() async {
-    final notes = await getNotes();
+    //final notes = await getNotes();
     setState(() {
-      this.notes = notes;
+      notes = [
+        Note(1, "Shoping List For August", "test", DateTime.now()),
+        Note(2, "Random notes when iam boring", "test2", DateTime.now()),
+        Note(3, "List music", "test3", DateTime.now()),
+      ];
+
+      widgetNotes = notes.map((n) {
+        return IntrinsicHeight(
+          child: NoteCard(
+            id: n.id,
+            title: n.title,
+            content: n.content,
+            creationTime: n.creationTime,
+            onNoteDelete: (n) {},
+          ),
+        );
+      }).toList();
+
+      widgetNotes.add(IntrinsicHeight(child: AddNoteCard()));
+      //this.notes = notes;
     });
   }
 
@@ -73,7 +95,6 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.red,
       bottomNavigationBar: IntrinsicHeight(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -113,40 +134,11 @@ class _MyHomePageState extends State<MyHomePage>
                   left: 32,
                   right: 32,
                 ),
-                child: Column(
-                  children: <Widget>[
-                    ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 40),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              spacing: 40,
-                              children: [
-                                Expanded(child: NoteCard()),
-                                Expanded(child: NoteCard()),
-                              ],
-                            ),
-                          ),
-                        ),
-                        IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            spacing: 40,
-                            children: [
-                              Expanded(child: NoteCard()),
-                              Expanded(child: AddNoteCard()),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //CreateNoteForm(),
-                  ],
+                child: StaggeredGrid.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 24, // add some space
+                  children: widgetNotes,
                 ),
               ),
             ),
