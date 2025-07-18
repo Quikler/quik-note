@@ -65,7 +65,7 @@ class AppBarWidget extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            spacing: 40,
+            spacing: 24,
             children: [
               Expanded(child: NoteButton()),
               Expanded(child: TodoButton()),
