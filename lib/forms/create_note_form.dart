@@ -33,7 +33,6 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
 
       MyApp.homePageStateKey.currentState?.setState(() {
         MyApp.homePageStateKey.currentState?.notes.add(newNoteWithId);
-        MyApp.homePageStateKey.currentState?.tabController?.animateTo(0);
       });
     }
   }

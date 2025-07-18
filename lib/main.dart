@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 
 import 'data/db.dart';
-import 'forms/create_note_form.dart';
 import 'models/note.dart';
 import 'widgets/add_note_card.dart';
-import 'widgets/note.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'widgets/note_card.dart';
@@ -47,8 +45,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  TabController? tabController;
-
   List<Note> notes = [];
 
   void _loadNotes() async {
@@ -71,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(vsync: this, length: 2);
     _loadNotes();
   }
 
@@ -79,14 +74,18 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Colors.red,
-      bottomNavigationBar: Container(
-        color: Colors.blue,
-        child: TabBar(
-          controller: tabController,
-          tabs: <Widget>[
-            Tab(icon: Icon(Icons.list_alt, color: Colors.white)),
-            Tab(icon: Icon(Icons.create_outlined, color: Colors.white)),
-          ],
+      bottomNavigationBar: IntrinsicHeight(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Row(
+            spacing: 8,
+            children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.folder)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.star)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.login)),
+            ],
+          ),
         ),
       ),
       //appBar: AppBar(
@@ -108,20 +107,16 @@ class _MyHomePageState extends State<MyHomePage>
             Align(alignment: Alignment.topCenter, child: AppBarWidget()),
             Expanded(
               child: Container(
-                //height: MediaQuery.of(context).size.height,
-                //margin: EdgeInsets.all(16),
                 margin: EdgeInsets.only(
                   top: 40,
                   bottom: 0,
                   left: 32,
                   right: 32,
                 ),
-                child: TabBarView(
-                  controller: tabController,
+                child: Column(
                   children: <Widget>[
                     ListView(
-                      //crossAxisAlignment: CrossAxisAlignment.stretch,
-                      //mainAxisAlignment: MainAxisAlignment.start,
+                      shrinkWrap: true,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(bottom: 40),
@@ -150,20 +145,7 @@ class _MyHomePageState extends State<MyHomePage>
                         ),
                       ],
                     ),
-                    //Column(
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    //children: notes.map((n) {
-                    //return NoteWidget(
-                    //id: n.id,
-                    //title: n.title,
-                    //content: n.content,
-                    //creationTime: n.creationTime,
-                    //onNoteDelete: _handleDeleteNote,
-                    //);
-                    //}).toList(),
-                    //),
-                    CreateNoteForm(),
+                    //CreateNoteForm(),
                   ],
                 ),
               ),
