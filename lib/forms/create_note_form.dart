@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-
-import '../data/db.dart';
-import '../main.dart';
-import '../models/note.dart';
+import 'package:quik_note/fill/custom_colors.dart';
 
 class CreateNoteForm extends StatefulWidget {
-  const CreateNoteForm({super.key});
+  final void Function(String?) onTitleChange;
+  final void Function(String?) onContentChange;
+
+  const CreateNoteForm({
+    super.key,
+    required this.onTitleChange,
+    required this.onContentChange,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -16,25 +20,15 @@ class CreateNoteForm extends StatefulWidget {
 class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool _isCreateNoteButtonDisabled = true;
   String? _title;
   String? _content;
 
-  void _handleSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      final newNote = Note(null, _title!, _content, DateTime.now());
-      final newNoteId = await insertNote(newNote);
-      final newNoteWithId = Note(
-        newNoteId,
-        newNote.title,
-        newNote.content,
-        newNote.creationTime,
-      );
+  void handleTitleChange(String? value) {
+    widget.onTitleChange(value);
+  }
 
-      MyApp.homePageStateKey.currentState?.setState(() {
-        MyApp.homePageStateKey.currentState?.notes.add(newNoteWithId);
-      });
-    }
+  void _handleContentChange(String? value) {
+    widget.onContentChange(value);
   }
 
   @override
@@ -43,52 +37,29 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        spacing: 14,
         children: [
           TextFormField(
+            maxLines: null,
             autovalidateMode: AutovalidateMode.always,
             decoration: const InputDecoration(
-              hintText: "Note title",
-              border: OutlineInputBorder(),
+              hintStyle: TextStyle(color: CustomColors.purple70),
+              border: InputBorder.none,
+              hintText: "Untitiled",
             ),
-            onChanged: (String? value) {
-              setState(() {
-                _title = value;
-                _isCreateNoteButtonDisabled = value == null || value.isEmpty;
-              });
-            },
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Note title is required';
-              }
-              return null;
-            },
+            style: TextStyle(fontSize: 24, color: CustomColors.purple),
+            onChanged: handleTitleChange,
           ),
           TextFormField(
             decoration: const InputDecoration(
-              hintText: "Note content",
-              border: OutlineInputBorder(),
+              hintText: "Note something here",
+              hintStyle: TextStyle(color: CustomColors.purple70),
+              border: InputBorder.none,
             ),
+            style: TextStyle(color: CustomColors.purple),
             minLines: 6,
             keyboardType: TextInputType.multiline,
             maxLines: null,
-            onChanged: (String? value) {
-              _content = value;
-            },
-          ),
-          FilledButton(
-            style: ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-              backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-                Set<WidgetState> states,
-              ) {
-                return _isCreateNoteButtonDisabled
-                    ? Colors.blue.withValues(alpha: 0.5)
-                    : Colors.blue;
-              }),
-            ),
-            onPressed: _isCreateNoteButtonDisabled ? null : _handleSubmit,
-            child: const Text("Create note"),
+            onChanged: _handleContentChange,
           ),
         ],
       ),
