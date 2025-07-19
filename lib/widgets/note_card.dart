@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NoteCard extends StatefulWidget {
   const NoteCard({
@@ -23,41 +24,47 @@ class NoteCard extends StatefulWidget {
 }
 
 class _NoteCardState extends State<NoteCard> {
+  String _formatCreationTime() {
+    final formatter = DateFormat('MM-dd hh:mm');
+    return formatter.format(widget.creationTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      //padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
         color: Color(0xFFFBFBF9),
         borderRadius: BorderRadius.all(Radius.circular(48)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 12,
         children: [
-          Container(
-            alignment: Alignment.center,
-            child: Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.cyan,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.cyan.withAlpha(100),
-                    spreadRadius: 1,
-                    blurRadius: 7,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-              ),
-              child: Icon(
-                Icons.shopping_cart,
-                color: Color(0xFFFBFBF9),
-                size: 48,
-              ),
-            ),
-          ),
+          //Container(
+            //alignment: Alignment.center,
+            //child: Container(
+              //padding: EdgeInsets.all(12),
+              //decoration: BoxDecoration(
+                //color: Colors.cyan,
+                //boxShadow: [
+                  //BoxShadow(
+                    //color: Colors.cyan.withAlpha(100),
+                    //spreadRadius: 1,
+                    //blurRadius: 7,
+                    //offset: Offset(0, 4),
+                  //),
+                //],
+                //borderRadius: BorderRadius.all(Radius.circular(50)),
+              //),
+              //child: Icon(
+                //Icons.shopping_cart,
+                //color: Color(0xFFFBFBF9),
+                //size: 48,
+              //),
+            //),
+          //),
           Column(
             spacing: 6,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,7 +78,7 @@ class _NoteCardState extends State<NoteCard> {
                 ),
               ),
               Text(
-                "Aug 21, 2021",
+                _formatCreationTime(),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
