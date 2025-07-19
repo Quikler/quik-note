@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quik_note/data/db.dart';
 import 'package:quik_note/forms/create_note_form.dart';
+import 'package:quik_note/models/note.dart';
 import 'package:quik_note/utils/helpers.dart';
 
 import '../wrappers/main_wrapper.dart';
@@ -40,11 +42,28 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
     });
   }
 
-  void _handleBackButtonPressed() {
-    Navigator.maybePop(context);
+  void _handleBackButtonPressed() async {
+    await _insertNewNoteWithPop();
   }
 
-  void _handleSaveButtonPressed() {}
+  void _handleSaveButtonPressed() async {
+    await _insertNewNoteWithPop();
+  }
+
+  Future<void> _insertNewNote() async {
+    if (_title != null) {
+      final newNote = Note(null, _title!, _content, DateTime.now());
+      await insertNote(newNote);
+    }
+  }
+
+  Future<void> _insertNewNoteWithPop() async {
+    await _insertNewNote();
+
+    if (mounted) {
+      Navigator.maybePop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
