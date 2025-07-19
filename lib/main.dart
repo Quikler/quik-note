@@ -8,6 +8,8 @@ import 'widgets/add_note_card.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'widgets/note_card.dart';
+import 'wrappers/main_wrapper.dart';
+import 'wrappers/main_wrapper_margin.dart';
 
 Future main() async {
   // Initialize FFI
@@ -114,26 +116,12 @@ class _MyHomePageState extends State<MyHomePage>
       //toolbarHeight: 180,
       //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       //),
-      body: Container(
-        alignment: Alignment.topCenter,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Color(0xFFB083FF)],
-          ),
-        ),
+      body: MainWrapper(
         child: Column(
           children: [
             Align(alignment: Alignment.topCenter, child: AppBarWidget()),
             Expanded(
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: 40,
-                  bottom: 0,
-                  left: 32,
-                  right: 32,
-                ),
+              child: MainWrapperMargin(
                 child: StaggeredGrid.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
