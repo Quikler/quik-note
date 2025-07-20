@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quik_note/data/db.dart';
 import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
+import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
 
 import '../wrappers/main_wrapper.dart';
@@ -53,7 +55,18 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   Future<void> _insertNewNote() async {
     if (_title != null) {
       final newNote = Note(null, _title!, _content, DateTime.now());
-      await insertNote(newNote);
+      final newNoteId = await insertNote(newNote);
+
+      final newNoteWithId = Note(
+        newNoteId,
+        newNote.title,
+        newNote.content,
+        newNote.creationTime,
+      );
+
+      if (mounted) {
+        context.read<NotesListModel>().insertNote(newNoteWithId);
+      }
     }
   }
 
