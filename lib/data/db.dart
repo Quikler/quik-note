@@ -38,14 +38,19 @@ Future<List<Note>> getNotes() async {
   ];
 }
 
-Future<void> updateNote(Note note) async {
+Future<int> updateNote(Note note) async {
   final db = await getNotesDb();
 
-  await db.update('notes', note.toMap(), where: 'id = ?', whereArgs: [note.id]);
+  return await db.update(
+    'notes',
+    note.toMap(),
+    where: 'id = ?',
+    whereArgs: [note.id],
+  );
 }
 
-Future<void> deleteNote(int id) async {
+Future<int> deleteNote(int id) async {
   final db = await getNotesDb();
 
-  await db.delete('notes', where: 'id = ?', whereArgs: [id]);
+  return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
 }
