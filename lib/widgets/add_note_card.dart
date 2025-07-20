@@ -6,19 +6,21 @@ import 'package:quik_note/svgs/common.dart';
 class AddNoteCard extends StatefulWidget {
   final double maxHeight;
 
-  const AddNoteCard({super.key, this.maxHeight = 200});
+  const AddNoteCard({super.key, this.maxHeight = 100});
 
   @override
   State<StatefulWidget> createState() => _AddNoteCardState();
 }
 
 class _AddNoteCardState extends State<AddNoteCard> {
-  final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(48));
+  final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
 
   void _handleTap() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => Material(child: CreateNoteFormPage())));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Material(child: CreateNoteFormPage()),
+      ),
+    );
   }
 
   @override
