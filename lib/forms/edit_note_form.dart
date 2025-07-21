@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:quik_note/fill/custom_colors.dart';
+import 'package:quik_note/models/note.dart';
 
-class CreateNoteForm extends StatefulWidget {
+class EditNoteForm extends StatefulWidget {
   final void Function(String?) onTitleChange;
   final void Function(String?) onContentChange;
+  final Note note;
 
-  const CreateNoteForm({
+  const EditNoteForm({
     super.key,
     required this.onTitleChange,
     required this.onContentChange,
+    required this.note,
   });
 
   @override
   State<StatefulWidget> createState() {
-    return _CreateNoteFormState();
+    return _EditNoteFormState();
   }
 }
 
-class _CreateNoteFormState extends State<CreateNoteForm> {
+class _EditNoteFormState extends State<EditNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String? _title;
@@ -32,6 +35,13 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _title = widget.note.title;
+    _content = widget.note.content;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -39,6 +49,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           TextFormField(
+            initialValue: _title,
             maxLines: null,
             autovalidateMode: AutovalidateMode.always,
             decoration: const InputDecoration(
@@ -50,6 +61,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
             onChanged: _handleTitleChange,
           ),
           TextFormField(
+            initialValue: _content,
             decoration: const InputDecoration(
               hintText: "Note something here",
               hintStyle: TextStyle(color: CustomColors.purple70),

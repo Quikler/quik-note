@@ -10,6 +10,12 @@ class NotesListModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateNote(Note note) {
+    final indexOfNote = notes.indexWhere((n) => n.id == note.id);
+    notes[indexOfNote] = note;
+    notifyListeners();
+  }
+
   void insertNote(Note note) {
     notes.add(note);
     notifyListeners();

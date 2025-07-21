@@ -40,13 +40,7 @@ class _NoteListState extends State<NotesList> {
               spacing: 16,
               children: context.watch<NotesListModel>().notes.map((n) {
                 return IntrinsicHeight(
-                  child: NoteCard(
-                    id: n.id,
-                    title: n.title,
-                    content: n.content,
-                    creationTime: n.creationTime,
-                    onNoteDelete: _handleDeleteNote,
-                  ),
+                  child: NoteCard(note: n, onNoteDelete: _handleDeleteNote),
                 );
               }).toList(),
             ),
