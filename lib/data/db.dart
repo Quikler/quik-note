@@ -29,7 +29,7 @@ Future<List<Note>> getNotes() async {
   return [
     for (final {
           'id': id as int,
-          'title': title as String,
+          'title': title as String?,
           'content': content as String?,
           'creationTime': creationTime as String,
         }

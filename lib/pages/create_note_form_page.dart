@@ -53,20 +53,22 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   }
 
   Future<void> _insertNewNote() async {
-    if (_title != null) {
-      final newNote = Note(null, _title!, _content, DateTime.now());
-      final newNoteId = await insertNote(newNote);
+    if (isNullOrEmpty(_title) && isNullOrEmpty(_content)) {
+      return;
+    }
 
-      final newNoteWithId = Note(
-        newNoteId,
-        newNote.title,
-        newNote.content,
-        newNote.creationTime,
-      );
+    final newNote = Note(null, _title, _content, DateTime.now());
+    final newNoteId = await insertNote(newNote);
 
-      if (mounted) {
-        context.read<NotesListModel>().insertNote(newNoteWithId);
-      }
+    final newNoteWithId = Note(
+      newNoteId,
+      newNote.title,
+      newNote.content,
+      newNote.creationTime,
+    );
+
+    if (mounted) {
+      context.read<NotesListModel>().insertNote(newNoteWithId);
     }
   }
 

@@ -90,9 +90,9 @@ class _NoteCardState extends State<NoteCard> {
                       children: [
                         Expanded(
                           child: Text(
+                            widget.note.title ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            widget.note.title,
                             style: TextStyle(
                               fontSize: 20,
                               color: Color(0xFF380099),

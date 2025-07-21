@@ -6,8 +6,8 @@ import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
 
-import '../wrappers/main_wrapper.dart';
-import '../wrappers/main_wrapper_margin.dart';
+import 'package:quik_note/wrappers/main_wrapper.dart';
+import 'package:quik_note/wrappers/main_wrapper_margin.dart';
 
 class EditNoteFormPage extends StatefulWidget {
   final Note note;
@@ -55,19 +55,26 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   }
 
   Future<void> _updateNote() async {
-    if (_title != null) {
-      final noteToUpdate = Note(
-        widget.note.id,
-        _title!,
-        _content,
-        widget.note.creationTime,
-      );
-
-      final count = await updateNote(noteToUpdate);
-
-      if (mounted && count > 0) {
-        context.read<NotesListModel>().updateNote(noteToUpdate);
+    // if title and content is null it means no info will be saved so delete it
+    if (isNullOrEmpty(_title) && isNullOrEmpty(_content)) {
+      final deletionCount = await deleteNote(widget.note.id!);
+      if (mounted && deletionCount > 0) {
+        context.read<NotesListModel>().deleteNote(widget.note.id!);
       }
+      return;
+    }
+
+    final noteToUpdate = Note(
+      widget.note.id,
+      _title,
+      _content,
+      widget.note.creationTime,
+    );
+
+    final count = await updateNote(noteToUpdate);
+
+    if (mounted && count > 0) {
+      context.read<NotesListModel>().updateNote(noteToUpdate);
     }
   }
 
@@ -77,6 +84,13 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
     if (mounted) {
       Navigator.maybePop(context);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _title = widget.note.title;
+    _content = widget.note.content;
   }
 
   @override

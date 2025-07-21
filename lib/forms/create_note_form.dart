@@ -20,9 +20,6 @@ class CreateNoteForm extends StatefulWidget {
 class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String? _title;
-  String? _content;
-
   void _handleTitleChange(String? value) {
     widget.onTitleChange(value);
   }
