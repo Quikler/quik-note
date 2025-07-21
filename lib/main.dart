@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
@@ -10,12 +12,16 @@ import 'wrappers/main_wrapper.dart';
 
 Future main() async {
   // Initialize FFI
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+  if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => NotesListModel())], // TODO: make this shit not global across whole app if possible of course
+      providers: [
+        ChangeNotifierProvider(create: (_) => NotesListModel()),
+      ], // TODO: make this shit not global across whole app if possible of course
       child: MyApp(),
     ),
   );
