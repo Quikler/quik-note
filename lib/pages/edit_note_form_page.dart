@@ -26,13 +26,13 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   String? _content;
 
   bool _isSaveButtonVisible() {
-    return !isNullOrEmpty(_title) || !isNullOrEmpty(_content);
+    return !_title.isNullOrWhiteSpace || !_content.isNullOrWhiteSpace;
   }
 
   void _handleTitleChange(String? value) {
     setState(() {
       _title = value;
-      if (!isNullOrEmpty(value)) {
+      if (!value.isNullOrWhiteSpace) {
         _appTitle = value!;
       } else {
         _appTitle = _untitled;
@@ -56,7 +56,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
 
   Future<void> _updateNote() async {
     // if title and content is null it means no info will be saved so delete it
-    if (isNullOrEmpty(_title) && isNullOrEmpty(_content)) {
+    if (_title.isNullOrWhiteSpace && _content.isNullOrWhiteSpace) {
       final deletionCount = await deleteNote(widget.note.id!);
       if (mounted && deletionCount > 0) {
         context.read<NotesListModel>().deleteNote(widget.note.id!);

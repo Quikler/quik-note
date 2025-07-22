@@ -24,13 +24,13 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   String? _content;
 
   bool _isSaveButtonVisible() {
-    return !isNullOrEmpty(_title) || !isNullOrEmpty(_content);
+    return !_title.isNullOrWhiteSpace || !_content.isNullOrWhiteSpace;
   }
 
   void _handleTitleChange(String? value) {
     setState(() {
       _title = value;
-      if (!isNullOrEmpty(value)) {
+      if (!value.isNullOrWhiteSpace) {
         _appTitle = value!;
       } else {
         _appTitle = _untitled;
@@ -53,7 +53,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   }
 
   Future<void> _insertNewNote() async {
-    if (isNullOrEmpty(_title) && isNullOrEmpty(_content)) {
+    if (_title.isNullOrWhiteSpace && _content.isNullOrWhiteSpace) {
       return;
     }
 
