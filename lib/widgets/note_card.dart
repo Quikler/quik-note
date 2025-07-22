@@ -29,6 +29,27 @@ class _NoteCardState extends State<NoteCard> {
     return n.title ?? "";
   }
 
+  String _getNoteContent() {
+    final n = widget.note;
+
+    // if content is null or white space return empty string
+    if (n.content.isNullOrWhiteSpace) {
+      return "";
+    }
+
+    final splittedContent = n.content!.split('\n');
+
+    // if title is null or white space then content should not be empty
+    if (n.title.isNullOrWhiteSpace) {
+      if (splittedContent.length > 1) {
+        return splittedContent[1];
+      }
+      return "";
+    }
+
+    return splittedContent[0];
+  }
+
   String _formatCreationTime() {
     final formatter = DateFormat('MM-dd hh:mm');
     return formatter.format(widget.note.creationTime);
@@ -65,8 +86,8 @@ class _NoteCardState extends State<NoteCard> {
           child: Container(
             //padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               //spacing: 12,
               children: [
                 //Container(
@@ -92,40 +113,55 @@ class _NoteCardState extends State<NoteCard> {
                 //),
                 //),
                 //),
-                Column(
-                  spacing: 6,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _getNoteTitle(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFF380099),
-                              fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Column(
+                    spacing: 6,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _getNoteTitle(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Color(0xFF380099),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          color: Colors.pink,
-                          onPressed: _handleNoteDelete,
-                          icon: Icon(Icons.delete),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      _formatCreationTime(),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFA3A3A3),
+                        ],
                       ),
-                    ),
-                  ],
+                      Row(
+                        spacing: 6,
+                        children: [
+                          Text(
+                            _formatCreationTime(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFFA3A3A3),
+                            ),
+                          ),
+                          Text(
+                            _getNoteContent(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFFA3A3A3),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  color: Colors.pink,
+                  onPressed: _handleNoteDelete,
+                  icon: Icon(Icons.delete),
                 ),
               ],
             ),
