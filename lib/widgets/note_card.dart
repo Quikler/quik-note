@@ -145,12 +145,16 @@ class _NoteCardState extends State<NoteCard> {
                               color: Color(0xFFA3A3A3),
                             ),
                           ),
-                          Text(
-                            _getNoteContent(),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFFA3A3A3),
+                          Expanded(
+                            child: Text(
+                              _getNoteContent(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFFA3A3A3),
+                              ),
                             ),
                           ),
                         ],
