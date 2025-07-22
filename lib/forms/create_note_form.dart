@@ -19,6 +19,7 @@ class CreateNoteForm extends StatefulWidget {
 
 class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FocusNode _contentFocusNote = FocusNode();
 
   void _handleTitleChange(String? value) {
     widget.onTitleChange(value);
@@ -26,6 +27,12 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
 
   void _handleContentChange(String? value) {
     widget.onContentChange(value);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _contentFocusNote.requestFocus();
   }
 
   @override
@@ -52,6 +59,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
               hintStyle: TextStyle(color: CustomColors.purple70),
               border: InputBorder.none,
             ),
+            focusNode: _contentFocusNote,
             style: TextStyle(color: CustomColors.purple),
             minLines: 6,
             keyboardType: TextInputType.multiline,
