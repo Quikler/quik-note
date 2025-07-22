@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:quik_note/data/db.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/pages/edit_note_form_page.dart';
+import 'package:quik_note/utils/helpers.dart';
 
 class NoteCard extends StatefulWidget {
   const NoteCard({super.key, required this.note, required this.onNoteDelete});
@@ -18,6 +19,15 @@ class NoteCard extends StatefulWidget {
 
 class _NoteCardState extends State<NoteCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
+
+  String _getNoteTitle() {
+    final n = widget.note;
+    if (n.title.isNullOrWhiteSpace) {
+      return n.content ?? "";
+    }
+
+    return n.title ?? "";
+  }
 
   String _formatCreationTime() {
     final formatter = DateFormat('MM-dd hh:mm');
@@ -90,7 +100,7 @@ class _NoteCardState extends State<NoteCard> {
                       children: [
                         Expanded(
                           child: Text(
-                            widget.note.title ?? "",
+                            _getNoteTitle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
