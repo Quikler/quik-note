@@ -9,6 +9,7 @@ import 'package:quik_note/widgets/notes_list.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'pages/create_note_form_page.dart';
 import 'wrappers/main_wrapper.dart';
 
 final appBarStyle = SystemUiOverlayStyle(
@@ -98,8 +99,14 @@ class _MyHomePageState extends State<MyHomePage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => Material(child: CreateNoteFormPage()),
+            ),
+          );
+        },
+        tooltip: 'Add note',
         child: const Icon(Icons.add),
       ),
     );
