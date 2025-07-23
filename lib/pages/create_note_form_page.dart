@@ -77,7 +77,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
     );
 
     if (mounted) {
-      context.read<NotesListModel>().insertNote(newNoteWithId);
+      context.read<NotesListModel>().insertStartNote(newNoteWithId);
     }
   }
 

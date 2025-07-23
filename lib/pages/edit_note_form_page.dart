@@ -91,7 +91,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
     final count = await updateNote(noteToUpdate);
 
     if (mounted && count > 0) {
-      context.read<NotesListModel>().updateNote(noteToUpdate);
+      context.read<NotesListModel>().deleteAndInsertStartNote(noteToUpdate);
     }
   }
 
