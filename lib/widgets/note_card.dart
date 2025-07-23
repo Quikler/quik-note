@@ -23,10 +23,10 @@ class _NoteCardState extends State<NoteCard> {
   String _getNoteTitle() {
     final n = widget.note;
     if (n.title.isNullOrWhiteSpace) {
-      return n.content ?? "";
+      return n.content?.trim() ?? "";
     }
 
-    return n.title ?? "";
+    return n.title?.trim() ?? "";
   }
 
   String _getNoteContent() {
@@ -38,6 +38,7 @@ class _NoteCardState extends State<NoteCard> {
     }
 
     final splittedContent = n.content!.split('\n');
+    splittedContent.removeWhere((c) => c.isNullOrWhiteSpace);
 
     // if title is null or white space then content should not be empty
     if (n.title.isNullOrWhiteSpace) {
