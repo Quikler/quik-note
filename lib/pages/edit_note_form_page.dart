@@ -46,12 +46,20 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
     });
   }
 
-  void _handleBackButtonPressed() async {
+  void _handleBackButtonPressed() {
+    _pop();
+  }
+
+  void _handleSaveButtonPressed() {
+    _pop();
+  }
+
+  void _handlePopOfPopScope(bool didPop, Object? result) async {
     await _updateNoteWithPop();
   }
 
-  void _handleSaveButtonPressed() async {
-    await _updateNoteWithPop();
+  void _pop() {
+    Navigator.maybePop(context);
   }
 
   Future<void> _updateNote() async {
@@ -81,10 +89,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
 
   Future<void> _updateNoteWithPop() async {
     await _updateNote();
-
-    if (mounted) {
-      Navigator.maybePop(context);
-    }
+    _pop();
   }
 
   @override
@@ -96,46 +101,49 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 75,
-        actions: [
-          // The rightest button in actions
-          Visibility(
-            visible: _isSaveButtonVisible(),
-            child: Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                iconSize: 24,
-                onPressed: _handleSaveButtonPressed,
-                icon: Icon(Icons.check),
+    return PopScope(
+      onPopInvokedWithResult: _handlePopOfPopScope,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 75,
+          actions: [
+            // The rightest button in actions
+            Visibility(
+              visible: _isSaveButtonVisible(),
+              child: Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  iconSize: 24,
+                  onPressed: _handleSaveButtonPressed,
+                  icon: Icon(Icons.check),
+                ),
+              ),
+            ),
+          ],
+          leading: BackButton(
+            style: ButtonStyle(iconSize: WidgetStatePropertyAll(24)),
+            onPressed: _handleBackButtonPressed,
+          ),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xff5E00FF), Color(0x59380099)],
               ),
             ),
           ),
-        ],
-        leading: BackButton(
-          style: ButtonStyle(iconSize: WidgetStatePropertyAll(24)),
-          onPressed: _handleBackButtonPressed,
+          title: Text(_appTitle),
+          foregroundColor: Colors.white,
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xff5E00FF), Color(0x59380099)],
-            ),
-          ),
-        ),
-        title: Text(_appTitle),
-        foregroundColor: Colors.white,
-      ),
-      body: MainWrapper(
-        child: SingleChildScrollView(
-          child: MainWrapperMargin(
-            child: EditNoteForm(
-              note: widget.note,
-              onTitleChange: _handleTitleChange,
-              onContentChange: _handleContentChange,
+        body: MainWrapper(
+          child: SingleChildScrollView(
+            child: MainWrapperMargin(
+              child: EditNoteForm(
+                note: widget.note,
+                onTitleChange: _handleTitleChange,
+                onContentChange: _handleContentChange,
+              ),
             ),
           ),
         ),

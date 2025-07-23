@@ -44,12 +44,20 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
     });
   }
 
-  void _handleBackButtonPressed() async {
+  void _handleBackButtonPressed() {
+    _pop();
+  }
+
+  void _handleSaveButtonPressed() {
+    _pop();
+  }
+
+  void _handlePopOfPopScope(bool didPop, Object? result) async {
     await _insertNewNoteWithPop();
   }
 
-  void _handleSaveButtonPressed() async {
-    await _insertNewNoteWithPop();
+  void _pop() {
+    Navigator.maybePop(context);
   }
 
   Future<void> _insertNewNote() async {
@@ -65,7 +73,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       newNote.title,
       newNote.content,
       newNote.creationTime,
-      null
+      null,
     );
 
     if (mounted) {
@@ -75,53 +83,53 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
 
   Future<void> _insertNewNoteWithPop() async {
     await _insertNewNote();
-
-    if (mounted) {
-      Navigator.maybePop(context);
-    }
+    _pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 75,
-        actions: [
-          // The rightest button in actions
-          Visibility(
-            visible: _isSaveButtonVisible(),
-            child: Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                iconSize: 24,
-                onPressed: _handleSaveButtonPressed,
-                icon: Icon(Icons.check),
+    return PopScope(
+      onPopInvokedWithResult: _handlePopOfPopScope,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 75,
+          actions: [
+            // The rightest button in actions
+            Visibility(
+              visible: _isSaveButtonVisible(),
+              child: Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  iconSize: 24,
+                  onPressed: _handleSaveButtonPressed,
+                  icon: Icon(Icons.check),
+                ),
+              ),
+            ),
+          ],
+          leading: BackButton(
+            style: ButtonStyle(iconSize: WidgetStatePropertyAll(24)),
+            onPressed: _handleBackButtonPressed,
+          ),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xff5E00FF), Color(0x59380099)],
               ),
             ),
           ),
-        ],
-        leading: BackButton(
-          style: ButtonStyle(iconSize: WidgetStatePropertyAll(24)),
-          onPressed: _handleBackButtonPressed,
+          title: Text(_appTitle),
+          foregroundColor: Colors.white,
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xff5E00FF), Color(0x59380099)],
-            ),
-          ),
-        ),
-        title: Text(_appTitle),
-        foregroundColor: Colors.white,
-      ),
-      body: MainWrapper(
-        child: SingleChildScrollView(
-          child: MainWrapperMargin(
-            child: CreateNoteForm(
-              onTitleChange: _handleTitleChange,
-              onContentChange: _handleContentChange,
+        body: MainWrapper(
+          child: SingleChildScrollView(
+            child: MainWrapperMargin(
+              child: CreateNoteForm(
+                onTitleChange: _handleTitleChange,
+                onContentChange: _handleContentChange,
+              ),
             ),
           ),
         ),
