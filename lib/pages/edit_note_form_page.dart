@@ -21,8 +21,14 @@ class EditNoteFormPage extends StatefulWidget {
 class _EditNoteFormPageState extends State<EditNoteFormPage> {
   static const String _untitled = "Untitled";
 
+  String? _initialTitle;
+  String? _initialContent;
+
   String? _title;
   String? _content;
+
+  bool _isNoteChanged() =>
+      _initialTitle != _title || _initialContent != _content;
 
   bool _isSaveButtonVisible() {
     return !_title.isNullOrWhiteSpace || !_content.isNullOrWhiteSpace;
@@ -61,6 +67,10 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   }
 
   Future<void> _updateNote() async {
+    if (!_isNoteChanged()) {
+      return;
+    }
+
     // if title and content is null it means no info will be saved so delete it
     if (_title.isNullOrWhiteSpace && _content.isNullOrWhiteSpace) {
       final deletionCount = await deleteNote(widget.note.id!);
@@ -93,6 +103,9 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   @override
   void initState() {
     super.initState();
+    _initialTitle = widget.note.title;
+    _initialContent = widget.note.content;
+
     _title = widget.note.title;
     _content = widget.note.content;
   }
