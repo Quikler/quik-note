@@ -20,7 +20,6 @@ class EditNoteFormPage extends StatefulWidget {
 
 class _EditNoteFormPageState extends State<EditNoteFormPage> {
   static const String _untitled = "Untitled";
-  String _appTitle = _untitled;
 
   String? _title;
   String? _content;
@@ -29,14 +28,13 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
     return !_title.isNullOrWhiteSpace || !_content.isNullOrWhiteSpace;
   }
 
+  String _getAppTitle() {
+    return !_title.isNullOrWhiteSpace ? _title! : _untitled;
+  }
+
   void _handleTitleChange(String? value) {
     setState(() {
       _title = value;
-      if (!value.isNullOrWhiteSpace) {
-        _appTitle = value!;
-      } else {
-        _appTitle = _untitled;
-      }
     });
   }
 
@@ -133,7 +131,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
               ),
             ),
           ),
-          title: Text(_appTitle),
+          title: Text(_getAppTitle()),
           foregroundColor: Colors.white,
         ),
         body: MainWrapper(
