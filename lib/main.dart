@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/widgets/app_bar.dart';
@@ -10,6 +11,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'wrappers/main_wrapper.dart';
 
+final appBarStyle = SystemUiOverlayStyle(
+  statusBarIconBrightness: Brightness.light,
+  statusBarBrightness: Brightness.dark,
+);
+
 Future main() async {
   // Initialize FFI
   if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
@@ -18,11 +24,14 @@ Future main() async {
   }
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NotesListModel()),
-      ], // TODO: make this shit not global across whole app if possible of course
-      child: MyApp(),
+    AnnotatedRegion<SystemUiOverlayStyle>(
+      value: appBarStyle,
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => NotesListModel()),
+        ], // TODO: make this shit not global across whole app if possible of course
+        child: MyApp(),
+      ),
     ),
   );
 }
@@ -38,6 +47,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        appBarTheme: AppBarTheme(systemOverlayStyle: appBarStyle),
         //scaffoldBackgroundColor: Colors.black,
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
