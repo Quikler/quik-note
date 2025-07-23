@@ -11,7 +11,13 @@ class AppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 32, bottom: 40, left: 32, right: 32),
+      padding: EdgeInsets.only(
+        // MediaQuery.of(context).padding.top indicates height of status bar in android and ios
+        top: 32 + MediaQuery.of(context).padding.top,
+        bottom: 40,
+        left: 32,
+        right: 32,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
         gradient: LinearGradient(
