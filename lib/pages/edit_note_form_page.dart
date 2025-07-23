@@ -69,6 +69,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
       _title,
       _content,
       widget.note.creationTime,
+      DateTime.now(),
     );
 
     final count = await updateNote(noteToUpdate);

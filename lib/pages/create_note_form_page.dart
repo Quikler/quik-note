@@ -57,7 +57,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       return;
     }
 
-    final newNote = Note(null, _title, _content, DateTime.now());
+    final newNote = Note(null, _title, _content, DateTime.now(), null);
     final newNoteId = await insertNote(newNote);
 
     final newNoteWithId = Note(
@@ -65,6 +65,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       newNote.title,
       newNote.content,
       newNote.creationTime,
+      null
     );
 
     if (mounted) {

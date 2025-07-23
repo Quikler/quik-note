@@ -3,8 +3,15 @@ class Note {
   final String? title;
   final String? content;
   final DateTime creationTime;
+  final DateTime? lastEditedTime;
 
-  const Note(this.id, this.title, this.content, this.creationTime);
+  const Note(
+    this.id,
+    this.title,
+    this.content,
+    this.creationTime,
+    this.lastEditedTime,
+  );
 
   Map<String, Object?> toMap() {
     return {
@@ -12,26 +19,12 @@ class Note {
       'title': title,
       'content': content,
       'creationTime': creationTime.toString(),
+      'lastEditedTime': lastEditedTime?.toString(),
     };
   }
 
   @override
   String toString() {
-    return 'Note{id: $id, title: $title, content: $content, creationTime: $creationTime}';
-  }
-
-  Note.fromJson(Map<String, dynamic> json)
-    : id = json["id"],
-      title = json["title"],
-      content = json["content"],
-      creationTime = DateTime.parse(json["creationTime"]);
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'content': content,
-      'creationTime': creationTime.toString(),
-    };
+    return 'Note{id: $id, title: $title, content: $content, creationTime: $creationTime, lastEditedTime: $lastEditedTime}';
   }
 }

@@ -52,6 +52,12 @@ class _NoteCardState extends State<NoteCard> {
 
   String _formatCreationTime() {
     final formatter = DateFormat('MM-dd hh:mm');
+
+    // if lastEditedTime is presented display it instead of creationTime
+    if (widget.note.lastEditedTime != null) {
+      return formatter.format(widget.note.lastEditedTime!);
+    }
+
     return formatter.format(widget.note.creationTime);
   }
 
