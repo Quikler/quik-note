@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../models/note.dart';
+import 'package:quik_note/models/note.dart';
 
 Future<Database> getNotesDb() async {
   return openDatabase(
@@ -24,7 +24,10 @@ Future<int> insertNote(Note note) async {
 Future<List<Note>> getNotes() async {
   final db = await getNotesDb();
 
-  final List<Map<String, Object?>> noteMaps = await db.query('notes');
+  final List<Map<String, Object?>> noteMaps = await db.query(
+    'notes',
+    orderBy: 'COALESCE(lastEditedTime, creationTime) desc',
+  );
 
   return [
     for (final {
