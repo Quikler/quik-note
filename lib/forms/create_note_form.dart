@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 
 class CreateNoteForm extends StatefulWidget {
@@ -29,6 +30,10 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
     widget.onContentChange(value);
   }
 
+  void _handleTitleSubmitted(String? value) {
+    _contentFocusNote.requestFocus();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +48,9 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           TextFormField(
+            inputFormatters: [FilteringTextInputFormatter.deny('\n')],
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: _handleTitleSubmitted,
             maxLines: null,
             autovalidateMode: AutovalidateMode.always,
             decoration: const InputDecoration(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/models/note.dart';
 
@@ -22,6 +23,7 @@ class EditNoteForm extends StatefulWidget {
 
 class _EditNoteFormState extends State<EditNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FocusNode _contentFocusNote = FocusNode();
 
   String? _title;
   String? _content;
@@ -32,6 +34,10 @@ class _EditNoteFormState extends State<EditNoteForm> {
 
   void _handleContentChange(String? value) {
     widget.onContentChange(value);
+  }
+
+  void _handleTitleSubmitted(String? value) {
+    _contentFocusNote.requestFocus();
   }
 
   @override
@@ -49,6 +55,9 @@ class _EditNoteFormState extends State<EditNoteForm> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           TextFormField(
+            inputFormatters: [FilteringTextInputFormatter.deny('\n')],
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: _handleTitleSubmitted,
             initialValue: _title,
             maxLines: null,
             autovalidateMode: AutovalidateMode.always,
