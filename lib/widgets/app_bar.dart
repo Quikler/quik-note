@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/widgets/note_button.dart';
 import 'package:quik_note/widgets/todo_button.dart';
 
@@ -13,13 +14,13 @@ class AppBarWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(
         // MediaQuery.of(context).padding.top indicates height of status bar in android and ios
-        top: 32 + MediaQuery.of(context).padding.top,
-        bottom: 40,
-        left: 32,
-        right: 32,
+        top: deviceHeight(context) * 0.03 + MediaQuery.of(context).padding.top,
+        bottom: deviceHeight(context) * 0.03,
+        left: deviceWidth(context) * 0.05,
+        right: deviceWidth(context) * 0.05,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -27,11 +28,11 @@ class AppBarWidget extends StatelessWidget {
         ),
       ),
       child: Column(
-        spacing: 32,
+        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width / 1.5,
+            width: deviceWidth(context) / 1.5,
             padding: EdgeInsets.only(left: 48, right: 16),
             decoration: BoxDecoration(
               border: BoxBorder.all(color: Colors.white.withAlpha(80)),
@@ -46,11 +47,16 @@ class AppBarWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    style: TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Search Note",
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
                     ),
                   ),
                 ),
