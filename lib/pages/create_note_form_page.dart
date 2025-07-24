@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/data/db.dart';
+import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
@@ -8,8 +10,7 @@ import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/wrappers/note_form_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
-import '../wrappers/main_wrapper.dart';
-import '../wrappers/main_wrapper_margin.dart';
+import 'package:quik_note/wrappers/main_wrapper.dart';
 
 class CreateNoteFormPage extends StatefulWidget {
   const CreateNoteFormPage({super.key});
@@ -21,28 +22,41 @@ class CreateNoteFormPage extends StatefulWidget {
 class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   static const String _untitled = "Untitled";
   String _appTitle = _untitled;
+  bool _isSaveButtonVisible = false;
 
-  String? _title;
-  String? _content;
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
 
-  bool _isSaveButtonVisible() {
-    return !_title.isNullOrWhiteSpace || !_content.isNullOrWhiteSpace;
-  }
+  @override
+  void initState() {
+    super.initState();
 
-  void _handleTitleChange(String? value) {
-    setState(() {
-      _title = value;
-      if (!value.isNullOrWhiteSpace) {
-        _appTitle = value!;
-      } else {
-        _appTitle = _untitled;
-      }
+    // Listen for title change
+    _titleController.addListener(() {
+      final value = _titleController.text;
+      setState(() {
+        if (!value.isNullOrWhiteSpace) {
+          _isSaveButtonVisible = true;
+          _appTitle = value;
+        } else {
+          _appTitle = _untitled;
+          if (_contentController.text.isNullOrWhiteSpace) {
+            _isSaveButtonVisible = false;
+          }
+        }
+      });
     });
-  }
 
-  void _handleContentChange(String? value) {
-    setState(() {
-      _content = value;
+    // Listen for content change
+    _contentController.addListener(() {
+      final value = _contentController.text;
+      setState(() {
+        if (!value.isNullOrWhiteSpace) {
+          _isSaveButtonVisible = true;
+        } else if (_titleController.text.isNullOrWhiteSpace) {
+          _isSaveButtonVisible = false;
+        }
+      });
     });
   }
 
@@ -63,11 +77,12 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   }
 
   Future<void> _insertNewNote() async {
-    if (_title.isNullOrWhiteSpace && _content.isNullOrWhiteSpace) {
+    final title = _titleController.text, content = _contentController.text;
+    if (title.isNullOrWhiteSpace && content.isNullOrWhiteSpace) {
       return;
     }
 
-    final newNote = Note(null, _title, _content, DateTime.now(), null);
+    final newNote = Note(null, title, content, DateTime.now(), null);
     final newNoteId = await insertNote(newNote);
 
     final newNoteWithId = Note(
@@ -88,17 +103,71 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
     _pop();
   }
 
+  void _handleCopy() async {
+    await Clipboard.setData(ClipboardData(text: _contentController.text));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.white,
+          content: Text(
+            "Content successfully copied to clipboard",
+            style: TextStyle(color: CustomColors.purple),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _handlePaste() async {
+    final clipboardData = await Clipboard.getData("text/plain");
+    if (clipboardData != null) {
+      final updatedText = _contentController.text + clipboardData.text!;
+      _contentController.value = _contentController.value.copyWith(
+        text: updatedText,
+        selection: TextSelection.collapsed(offset: updatedText.length),
+      );
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.white,
+          content: Text(
+            "Clipboard text successfully pasted into content",
+            style: TextStyle(color: CustomColors.purple),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
+        floatingActionButton: Row(
+          spacing: 12,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: "copy",
+              onPressed: _handleCopy,
+              child: const Icon(Icons.copy),
+            ),
+            FloatingActionButton(
+              heroTag: "paste",
+              onPressed: _handlePaste,
+              child: const Icon(Icons.paste),
+            ),
+          ],
+        ),
         appBar: AppBar(
           toolbarHeight: 75,
           actions: [
             // The rightest button in actions
             Visibility(
-              visible: _isSaveButtonVisible(),
+              visible: _isSaveButtonVisible,
               child: Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
@@ -129,8 +198,8 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
           child: SingleChildScrollView(
             child: NoteFormWrapper(
               child: CreateNoteForm(
-                onTitleChange: _handleTitleChange,
-                onContentChange: _handleContentChange,
+                titleController: _titleController,
+                contentController: _contentController,
               ),
             ),
           ),

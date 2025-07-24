@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 
 class CreateNoteForm extends StatefulWidget {
-  final void Function(String?) onTitleChange;
-  final void Function(String?) onContentChange;
+  final TextEditingController titleController;
+  final TextEditingController contentController;
 
   const CreateNoteForm({
     super.key,
-    required this.onTitleChange,
-    required this.onContentChange,
+    required this.titleController,
+    required this.contentController,
   });
 
   @override
@@ -22,15 +22,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FocusNode _contentFocusNote = FocusNode();
 
-  void _handleTitleChange(String? value) {
-    widget.onTitleChange(value);
-  }
-
-  void _handleContentChange(String? value) {
-    widget.onContentChange(value);
-  }
-
-  void _handleTitleSubmitted(String? value) {
+  _handleTitleSubmitted(String? value) {
     _contentFocusNote.requestFocus();
   }
 
@@ -48,6 +40,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           TextFormField(
+            controller: widget.titleController,
             inputFormatters: [FilteringTextInputFormatter.deny('\n')],
             textInputAction: TextInputAction.next,
             onFieldSubmitted: _handleTitleSubmitted,
@@ -59,9 +52,9 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
               hintText: "Untitiled",
             ),
             style: TextStyle(fontSize: 24, color: CustomColors.purple),
-            onChanged: _handleTitleChange,
           ),
           TextFormField(
+            controller: widget.contentController,
             decoration: const InputDecoration(
               hintText: "Note something here",
               hintStyle: TextStyle(color: CustomColors.purple70),
@@ -72,7 +65,6 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
             minLines: 6,
             keyboardType: TextInputType.multiline,
             maxLines: null,
-            onChanged: _handleContentChange,
           ),
         ],
       ),
