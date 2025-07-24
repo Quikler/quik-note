@@ -8,6 +8,7 @@ import 'package:quik_note/utils/helpers.dart';
 
 import 'package:quik_note/wrappers/main_wrapper.dart';
 import 'package:quik_note/wrappers/main_wrapper_margin.dart';
+import 'package:quik_note/wrappers/note_form_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
 class EditNoteFormPage extends StatefulWidget {
@@ -150,7 +151,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
         ),
         body: MainWrapper(
           child: SingleChildScrollView(
-            child: MainWrapperMargin(
+            child: NoteFormWrapper(
               child: EditNoteForm(
                 note: widget.note,
                 onTitleChange: _handleTitleChange,

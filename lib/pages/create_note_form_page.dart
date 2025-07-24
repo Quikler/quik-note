@@ -5,6 +5,7 @@ import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
+import 'package:quik_note/wrappers/note_form_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
 import '../wrappers/main_wrapper.dart';
@@ -126,7 +127,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
         ),
         body: MainWrapper(
           child: SingleChildScrollView(
-            child: MainWrapperMargin(
+            child: NoteFormWrapper(
               child: CreateNoteForm(
                 onTitleChange: _handleTitleChange,
                 onContentChange: _handleContentChange,
