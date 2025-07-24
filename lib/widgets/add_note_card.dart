@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quik_note/pages/create_note_form_page.dart';
 import 'package:quik_note/svgs/common.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class AddNoteCard extends StatefulWidget {
   final double maxHeight;
@@ -51,10 +52,10 @@ class _AddNoteCardState extends State<AddNoteCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
+                    ResponsiveText(
                       textAlign: TextAlign.center,
                       "Add note",
-                      style: TextStyle(color: Colors.grey, fontSize: 10),
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                   ],
                 ),

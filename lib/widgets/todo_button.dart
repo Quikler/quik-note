@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class TodoButton extends StatefulWidget {
   const TodoButton({super.key});
@@ -25,7 +26,7 @@ class _TodoButtonState extends State<TodoButton> {
           shadowColor: Colors.transparent,
           padding: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
         ),
-        child: const Text(
+        child: const ResponsiveText(
           "To Do",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
         ),

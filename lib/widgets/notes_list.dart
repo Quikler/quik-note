@@ -7,6 +7,7 @@ import 'package:quik_note/utils/huminizer.dart';
 import 'package:quik_note/widgets/add_note_card.dart';
 import 'package:quik_note/widgets/note_card.dart';
 import 'package:quik_note/wrappers/main_wrapper_margin.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class NotesList extends StatefulWidget {
   const NotesList({super.key});
@@ -54,12 +55,12 @@ class _NoteListState extends State<NotesList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 12,
                       children: [
-                        Text(
+                        ResponsiveText(
                           entry.key,
                           style: TextStyle(
                             color: CustomColors.purple,
                             fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         Container(

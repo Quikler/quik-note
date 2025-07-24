@@ -8,6 +8,7 @@ import 'package:quik_note/utils/helpers.dart';
 
 import 'package:quik_note/wrappers/main_wrapper.dart';
 import 'package:quik_note/wrappers/main_wrapper_margin.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class EditNoteFormPage extends StatefulWidget {
   final Note note;
@@ -144,7 +145,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
               ),
             ),
           ),
-          title: Text(_getAppTitle()),
+          title: ResponsiveText(_getAppTitle()),
           foregroundColor: Colors.white,
         ),
         body: MainWrapper(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class NoteButton extends StatefulWidget {
   const NoteButton({super.key});
@@ -25,7 +26,7 @@ class _NoteButtonState extends State<NoteButton> {
           shadowColor: Colors.transparent,
           padding: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
         ),
-        child: const Text(
+        child: const ResponsiveText(
           "Notes",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
         ),

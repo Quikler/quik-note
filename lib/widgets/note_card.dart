@@ -4,6 +4,7 @@ import 'package:quik_note/data/db.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/pages/edit_note_form_page.dart';
 import 'package:quik_note/utils/helpers.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 class NoteCard extends StatefulWidget {
   const NoteCard({super.key, required this.note, required this.onNoteDelete});
@@ -128,12 +129,12 @@ class _NoteCardState extends State<NoteCard> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
+                            child: ResponsiveText(
                               _getNoteTitle(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                 color: Color(0xFF380099),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -144,7 +145,7 @@ class _NoteCardState extends State<NoteCard> {
                       Row(
                         spacing: 6,
                         children: [
-                          Text(
+                          ResponsiveText(
                             _formatCreationTime(),
                             style: TextStyle(
                               fontSize: 12,
@@ -153,13 +154,12 @@ class _NoteCardState extends State<NoteCard> {
                             ),
                           ),
                           Expanded(
-                            child: Text(
+                            child: ResponsiveText(
                               _getNoteContent(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w400,
                                 color: Color(0xFFA3A3A3),
                               ),
                             ),

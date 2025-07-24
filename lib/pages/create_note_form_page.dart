@@ -5,6 +5,7 @@ import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
+import 'package:quik_note/wrappers/responsive_text.dart';
 
 import '../wrappers/main_wrapper.dart';
 import '../wrappers/main_wrapper_margin.dart';
@@ -120,7 +121,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
               ),
             ),
           ),
-          title: Text(_appTitle),
+          title: ResponsiveText(_appTitle),
           foregroundColor: Colors.white,
         ),
         body: MainWrapper(
