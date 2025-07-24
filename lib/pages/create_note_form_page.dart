@@ -27,6 +27,8 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
+  final FocusNode contentFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +108,8 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   void _handleCopy() async {
     await Clipboard.setData(ClipboardData(text: _contentController.text));
     if (mounted) {
+      contentFocusNode.requestFocus();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
@@ -129,6 +133,8 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
     }
 
     if (mounted) {
+      contentFocusNode.requestFocus();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
@@ -200,6 +206,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
               child: CreateNoteForm(
                 titleController: _titleController,
                 contentController: _contentController,
+                contentFocusNode: contentFocusNode,
               ),
             ),
           ),

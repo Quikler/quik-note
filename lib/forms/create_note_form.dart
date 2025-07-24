@@ -5,11 +5,13 @@ import 'package:quik_note/fill/custom_colors.dart';
 class CreateNoteForm extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController contentController;
+  final FocusNode contentFocusNode;
 
   const CreateNoteForm({
     super.key,
     required this.titleController,
     required this.contentController,
+    required this.contentFocusNode,
   });
 
   @override
@@ -20,16 +22,16 @@ class CreateNoteForm extends StatefulWidget {
 
 class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final FocusNode _contentFocusNote = FocusNode();
 
   _handleTitleSubmitted(String? value) {
-    _contentFocusNote.requestFocus();
+    widget.contentFocusNode.requestFocus();
   }
 
   @override
   void initState() {
     super.initState();
-    _contentFocusNote.requestFocus();
+
+    widget.contentFocusNode.requestFocus();
   }
 
   @override
@@ -60,7 +62,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
               hintStyle: TextStyle(color: CustomColors.purple70),
               border: InputBorder.none,
             ),
-            focusNode: _contentFocusNote,
+            focusNode: widget.contentFocusNode,
             style: TextStyle(color: CustomColors.purple),
             minLines: 6,
             keyboardType: TextInputType.multiline,
