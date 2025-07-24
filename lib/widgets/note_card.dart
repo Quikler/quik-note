@@ -83,7 +83,7 @@ class _NoteCardState extends State<NoteCard> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: _borderRadius,
+        //borderRadius: _borderRadius,
         onTap: _handleTap,
         child: Ink(
           decoration: BoxDecoration(
