@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/fill/custom_colors.dart';
+import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
@@ -20,7 +21,13 @@ class NotesList extends StatefulWidget {
 class _NoteListState extends State<NotesList> {
   void _loadNotes() async {
     //context.read<NotesListModel>().initTest();
-    await context.read<NotesListModel>().assignFromDb();
+    final notesContext = context.read<NotesListModel>();
+    if (notesContext.isInStarMode) {
+      await notesContext.getStarredFromDb();
+      return;
+    }
+
+    await notesContext.getFromDb();
   }
 
   void _handleDeleteNote(int? id) {
@@ -44,6 +51,15 @@ class _NoteListState extends State<NotesList> {
   Widget build(BuildContext context) {
     final appBarMode = context.watch<AppBarModel>().mode;
 
+    final notesContext = context.watch<NotesListModel>();
+
+    List<Note> children;
+    if (notesContext.isInStarMode) {
+      children = notesContext.starredNotes;
+    } else {
+      children = notesContext.notes;
+    }
+
     return SingleChildScrollView(
       child: MainWrapperMargin(
         child: Column(
@@ -51,9 +67,7 @@ class _NoteListState extends State<NotesList> {
           children: [
             Column(
               spacing: 16,
-              children: context
-                  .watch<NotesListModel>()
-                  .notes
+              children: children
                   .groupBy(
                     (n) => getHuminizedDate(n.lastEditedTime ?? n.creationTime),
                   )

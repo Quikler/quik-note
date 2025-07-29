@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/widgets/app_bar.dart';
+import 'package:quik_note/widgets/bottom_bar.dart';
 import 'package:quik_note/widgets/notes_list.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -73,25 +74,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: IntrinsicHeight(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Row(
-            spacing: 8,
-            children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.folder)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.star)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.login)),
-            ],
-          ),
-        ),
-      ),
-      //appBar: AppBar(
-      //flexibleSpace: AppBarWidget(),
-      //toolbarHeight: 180,
-      //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      //),
+      bottomNavigationBar: BottomBar(),
       body: MainWrapper(
         child: Column(
           children: [

@@ -5,6 +5,7 @@ import 'package:quik_note/models/note.dart';
 class NotesListModel extends ChangeNotifier {
   List<Note> notes = [];
   List<Note> bufferNotes = [];
+  List<Note> starredNotes = [];
 
   Map<int, Note> selectedNotes = {};
 
@@ -24,6 +25,7 @@ class NotesListModel extends ChangeNotifier {
   }
 
   bool isInSearchMode = false;
+  bool isInStarMode = false;
 
   Map<int, int> contentIndexes = {};
   Map<int, int> titleIndexes = {};
@@ -85,10 +87,20 @@ class NotesListModel extends ChangeNotifier {
     notes.sort((a, b) => b.creationTime.compareTo(a.creationTime));
   }
 
-  Future<void> assignFromDb() async {
+  Future<void> getFromDb() async {
     bufferNotes = notes = await getNotes();
     notifyListeners();
   }
+
+  Future<void> getStarredFromDb() async {
+    starredNotes = await getNotes("starred = 1");
+    notifyListeners();
+  }
+
+  //Future<void> whereFromDb() async {
+  //notes = await getNotes("starred = 1");
+  //notifyListeners();
+  //}
 
   void assignFromBuffer() {
     notes = bufferNotes;

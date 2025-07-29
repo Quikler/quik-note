@@ -21,12 +21,14 @@ Future<int> insertNote(Note note) async {
   return await db.insert('notes', note.toMap());
 }
 
-Future<List<Note>> getNotes() async {
+Future<List<Note>> getNotes([String? where, List<Object?>? whereArgs]) async {
   final db = await getNotesDb();
 
   final List<Map<String, Object?>> noteMaps = await db.query(
     'notes',
     orderBy: 'COALESCE(lastEditedTime, creationTime) desc',
+    where: where,
+    whereArgs: whereArgs,
   );
 
   return [
