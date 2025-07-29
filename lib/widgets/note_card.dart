@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:quik_note/data/db.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
@@ -28,6 +29,8 @@ class NoteCard extends StatefulWidget {
 
 class _NoteCardState extends State<NoteCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
+
+  bool _isStarred = false;
 
   String _getNoteTitle() {
     final n = widget.note;
@@ -89,6 +92,22 @@ class _NoteCardState extends State<NoteCard> {
   void _handleCheck(bool? value) {
     final notesContext = context.read<NotesListModel>();
     notesContext.toggleSelected(widget.note);
+  }
+
+  void _handleStarPress() async {
+    final value = !_isStarred;
+    setState(() {
+      _isStarred = value;
+    });
+
+    final updatedNote = widget.note.copyWith(starred: value);
+    await updateNote(updatedNote);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isStarred = widget.note.starred;
   }
 
   @override
@@ -185,10 +204,19 @@ class _NoteCardState extends State<NoteCard> {
                     ],
                   ),
                 ),
-                Visibility(
-                  visible: widget.isCheckBoxVisible,
-                  child: Checkbox(onChanged: _handleCheck, value: isChecked),
-                ),
+                widget.isCheckBoxVisible
+                    ? Checkbox(onChanged: _handleCheck, value: isChecked)
+                    : IconButton(
+                        icon: Icon(
+                          _isStarred ? Icons.star : Icons.star_outline,
+                          color: Colors.pink,
+                        ),
+                        onPressed: _handleStarPress,
+                      ),
+                //Visibility(
+                //visible: widget.isCheckBoxVisible,
+                //child: Checkbox(onChanged: _handleCheck, value: isChecked),
+                //),
               ],
             ),
           ),

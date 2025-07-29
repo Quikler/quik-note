@@ -8,7 +8,7 @@ Future<Database> getNotesDb() async {
     join(await getDatabasesPath(), 'notes.db'),
     onCreate: (db, version) {
       return db.execute(
-        'CREATE TABLE notes(id INTEGER PRIMARY KEY, title TEXT, content TEXT, creationTime DATETIME DEFAULT current_timestamp, lastEditedTime DATETIME)',
+        'CREATE TABLE notes(id INTEGER PRIMARY KEY, title TEXT, content TEXT, starred BOOLEAN NOT NULL DEFAULT 0, creationTime DATETIME DEFAULT current_timestamp, lastEditedTime DATETIME)',
       );
     },
     version: 1,
@@ -36,6 +36,7 @@ Future<List<Note>> getNotes() async {
           'content': content as String?,
           'creationTime': creationTime as String,
           'lastEditedTime': lastEditedTime as String?,
+          'starred': starred as int,
         }
         in noteMaps)
       Note(
@@ -44,6 +45,7 @@ Future<List<Note>> getNotes() async {
         content,
         DateTime.parse(creationTime),
         lastEditedTime == null ? null : DateTime.parse(lastEditedTime),
+        starred == 0 ? false : true,
       ),
   ];
 }
