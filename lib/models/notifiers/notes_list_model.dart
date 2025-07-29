@@ -6,6 +6,23 @@ class NotesListModel extends ChangeNotifier {
   List<Note> notes = [];
   List<Note> bufferNotes = [];
 
+  Map<int, Note> selectedNotes = {};
+
+  void toggleSelected(Note note) {
+    if (selectedNotes.containsKey(note.id)) {
+      selectedNotes.remove(note.id);
+    } else {
+      selectedNotes[note.id!] = note;
+    }
+
+    notifyListeners();
+  }
+
+  void clearSelected() {
+    selectedNotes.clear();
+    notifyListeners();
+  }
+
   bool isInSearchMode = false;
 
   Map<int, int> contentIndexes = {};
@@ -103,6 +120,12 @@ class NotesListModel extends ChangeNotifier {
   void insertNote(Note note) {
     notes.add(note);
     notifyListeners();
+  }
+
+  void deleteNotes(List<int> ids) {
+    for (var i = 0; i < ids.length; i++) {
+      notes.removeWhere((n) => n.id == ids[i]);
+    }
   }
 
   void deleteNote(int id) {

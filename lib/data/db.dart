@@ -64,3 +64,13 @@ Future<int> deleteNote(int id) async {
 
   return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
 }
+
+Future<int> deleteNotes(List<int> ids) async {
+  final db = await getNotesDb();
+
+  return await db.delete(
+    'notes',
+    where: 'id IN (${List.filled(ids.length, '?').join(',')})',
+    whereArgs: ids,
+  );
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/fill/custom_colors.dart';
+import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/utils/huminizer.dart';
@@ -28,6 +29,11 @@ class _NoteListState extends State<NotesList> {
     }
   }
 
+  void _handleLongPress() {
+    final appBarContext = context.read<AppBarModel>();
+    appBarContext.toggleMode(AppBarMode.select);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +42,8 @@ class _NoteListState extends State<NotesList> {
 
   @override
   Widget build(BuildContext context) {
+    final appBarMode = context.watch<AppBarModel>().mode;
+
     return SingleChildScrollView(
       child: MainWrapperMargin(
         child: Column(
@@ -69,15 +77,20 @@ class _NoteListState extends State<NotesList> {
                             border: BoxBorder.all(color: CustomColors.purple),
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
-                          child: Column(
-                            children: entry.value
-                                .map(
-                                  (n) => NoteCard(
-                                    note: n,
-                                    onNoteDelete: _handleDeleteNote,
-                                  ),
-                                )
-                                .toList(),
+                          child: GestureDetector(
+                            onLongPress: _handleLongPress,
+                            child: Column(
+                              children: entry.value
+                                  .map(
+                                    (n) => NoteCard(
+                                      isCheckBoxVisible:
+                                          appBarMode == AppBarMode.select,
+                                      note: n,
+                                      onNoteDelete: _handleDeleteNote,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ],

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/notes_list.dart';
@@ -30,6 +31,7 @@ Future main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => NotesListModel()),
+          ChangeNotifierProvider(create: (_) => AppBarModel()),
         ], // TODO: make this shit not global across whole app if possible of course
         child: MyApp(),
       ),
