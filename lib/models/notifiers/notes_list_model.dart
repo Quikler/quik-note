@@ -8,6 +8,9 @@ class NotesListModel extends ChangeNotifier {
 
   bool isInSearchMode = false;
 
+  Map<int, int> contentIndexes = {};
+  Map<int, int> titleIndexes = {};
+
   void initTest() {
     notes = [
       Note(1, "test", "test", DateTime.now(), null),

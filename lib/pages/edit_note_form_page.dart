@@ -32,6 +32,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
+  final FocusNode titleFocusNode = FocusNode();
   final FocusNode contentFocusNode = FocusNode();
 
   bool _isNoteChanged() =>
@@ -159,6 +160,27 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
 
     _titleController.text = widget.note.title ?? "";
     _contentController.text = widget.note.content ?? "";
+
+    final noteContext = context.read<NotesListModel>();
+
+    // Determines if note context is in search mode
+    if (noteContext.isInSearchMode) {
+      if (noteContext.titleIndexes.containsKey(widget.note.id)) {
+        final titleSelection = noteContext.titleIndexes[widget.note.id];
+        _titleController.value = _titleController.value.copyWith(
+          selection: TextSelection.collapsed(offset: titleSelection!),
+        );
+
+        titleFocusNode.requestFocus();
+      } else if (noteContext.contentIndexes.containsKey(widget.note.id)) {
+        final contentSelection = noteContext.contentIndexes[widget.note.id];
+        _contentController.value = _contentController.value.copyWith(
+          selection: TextSelection.collapsed(offset: contentSelection!),
+        );
+
+        contentFocusNode.requestFocus();
+      }
+    }
   }
 
   @override
@@ -221,6 +243,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
                 note: widget.note,
                 titleController: _titleController,
                 contentController: _contentController,
+                titleFocusNode: titleFocusNode,
                 contentFocusNode: contentFocusNode,
               ),
             ),

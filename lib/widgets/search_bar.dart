@@ -15,21 +15,42 @@ class SearchBarWidget extends StatefulWidget {
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
   void _handleChange(String? value) {
+    final noteContext = context.read<NotesListModel>();
+
     if (value.isNullOrWhiteSpace || value == null) {
-      context.read<NotesListModel>().assignFromBuffer();
+      noteContext.assignFromBuffer();
+      noteContext.titleIndexes.clear();
+      noteContext.contentIndexes.clear();
       return;
     }
 
-    final noteContext = context.read<NotesListModel>();
-
     noteContext.where((n) {
+      // if title and content is not null or empty
       if (!n.title.isNullOrWhiteSpace && !n.content.isNullOrWhiteSpace) {
-        return n.title!.contains(value) || n.content!.contains(value);
+        final isTitleContainsValue = n.title!.contains(value);
+        final isContentContainsValue = n.content!.contains(value);
+
+        if (isTitleContainsValue) {
+          final indexOffset = value.length + n.title!.indexOf(value);
+          noteContext.titleIndexes[n.id!] = indexOffset;
+        } else if (isContentContainsValue) {
+          final indexOffset = value.length + n.content!.indexOf(value);
+          noteContext.contentIndexes[n.id!] = indexOffset;
+        }
+
+        return isTitleContainsValue || isContentContainsValue;
       }
 
-      return n.title.isNullOrWhiteSpace
-          ? n.content!.contains(value)
-          : n.title!.contains(value);
+      // if title is null or empty (means that content is not null or empty)
+      if (n.title.isNullOrWhiteSpace) {
+        final indexOffset = value.length + n.content!.indexOf(value);
+        noteContext.contentIndexes[n.id!] = indexOffset;
+        return n.content!.contains(value);
+      }
+
+      final indexOffset = value.length + n.title!.indexOf(value);
+      noteContext.titleIndexes[n.id!] = indexOffset;
+      return n.title!.contains(value);
     });
 
     noteContext.isInSearchMode = true;

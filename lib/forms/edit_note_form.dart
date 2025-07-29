@@ -8,6 +8,7 @@ class EditNoteForm extends StatefulWidget {
 
   final TextEditingController titleController;
   final TextEditingController contentController;
+  final FocusNode titleFocusNode;
   final FocusNode contentFocusNode;
 
   const EditNoteForm({
@@ -16,6 +17,7 @@ class EditNoteForm extends StatefulWidget {
     required this.contentController,
     required this.note,
     required this.contentFocusNode,
+    required this.titleFocusNode,
   });
 
   @override
@@ -55,6 +57,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
               border: InputBorder.none,
               hintText: "Untitiled",
             ),
+            focusNode: widget.titleFocusNode,
             style: TextStyle(fontSize: 24, color: CustomColors.purple),
           ),
           TextFormField(
