@@ -103,10 +103,17 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
   void _handlePaste() async {
     final clipboardData = await Clipboard.getData("text/plain");
     if (clipboardData != null) {
-      final updatedText = _contentController.text + clipboardData.text!;
+      final cursorPos = _contentController.selection.base.offset;
+
+      final textBeforeCursor = _contentController.text.substring(0, cursorPos);
+      final textAfterCursor = _contentController.text.substring(cursorPos);
+
+      final textBeforeAndPasted = textBeforeCursor + clipboardData.text!;
+      final updatedText = textBeforeAndPasted + textAfterCursor;
+
       _contentController.value = _contentController.value.copyWith(
         text: updatedText,
-        selection: TextSelection.collapsed(offset: updatedText.length),
+        selection: TextSelection.collapsed(offset: textBeforeAndPasted.length),
       );
     }
 
@@ -183,31 +190,54 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
     }
   }
 
+  void _showMoreMenu(TapDownDetails details) async {
+    final posOffset = details.globalPosition;
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(posOffset.dx, posOffset.dy, 0, 0),
+      items: [
+        PopupMenuItem(
+          child: GestureDetector(
+            onTap: _handleCopy,
+            child: Row(
+              spacing: 12,
+              children: [Icon(Icons.copy), const Text("Copy")],
+            ),
+          ),
+        ),
+        PopupMenuItem(
+          child: GestureDetector(
+            onTap: _handlePaste,
+            child: Row(
+              spacing: 12,
+              children: [Icon(Icons.paste), const Text("Paste")],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
-        floatingActionButton: Row(
-          spacing: 12,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              heroTag: "copy",
-              onPressed: _handleCopy,
-              child: const Icon(Icons.copy),
-            ),
-            FloatingActionButton(
-              heroTag: "paste",
-              onPressed: _handlePaste,
-              child: const Icon(Icons.paste),
-            ),
-          ],
-        ),
         appBar: AppBar(
           toolbarHeight: 75,
           actions: [
             // The rightest button in actions
+            Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(432)),
+                onTapDown: _showMoreMenu,
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(Icons.more_vert),
+                ),
+              ),
+            ),
             Visibility(
               visible: _isSaveButtonVisible,
               child: Container(
