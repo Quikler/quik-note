@@ -24,7 +24,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       return;
     }
 
-    noteContext.where((n) {
+    noteContext.whereInBuffer((n) {
       // if title and content is not null or empty
       if (!n.title.isNullOrWhiteSpace && !n.content.isNullOrWhiteSpace) {
         final isTitleContainsValue = n.title!.contains(value);

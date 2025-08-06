@@ -113,8 +113,8 @@ class NotesListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void where(bool Function(Note) predicate) {
-    notes = notes.where(predicate).toList();
+  void whereInBuffer(bool Function(Note) predicate) {
+    notes = bufferNotes.where(predicate).toList();
     notifyListeners();
   }
 
