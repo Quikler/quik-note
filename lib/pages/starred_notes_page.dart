@@ -17,9 +17,10 @@ class _StarredNotesPageState extends State<StarredNotesPage> {
     Navigator.maybePop(context);
   }
 
-  void _handlePopOfPopScope(bool didPop, Object? result) async {
-    context.read<NotesListModel>().isInStarMode = false;
-    await context.read<NotesListModel>().getFromDb();
+  void _handlePopOfPopScope(bool didPop, Object? result) {
+    final notesContext = context.read<NotesListModel>();
+    notesContext.isInStarMode = false;
+    notesContext.assignFromBuffer();
   }
 
   @override
