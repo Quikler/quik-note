@@ -57,6 +57,7 @@ class _CreateNoteFormState extends State<CreateNoteForm> {
           ),
           TextFormField(
             controller: widget.contentController,
+            textCapitalization: TextCapitalization.sentences,
             decoration: const InputDecoration(
               hintText: "Note something here",
               hintStyle: TextStyle(color: CustomColors.purple70),

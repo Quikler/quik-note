@@ -61,6 +61,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
             style: TextStyle(fontSize: 24, color: CustomColors.purple),
           ),
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             controller: widget.contentController,
             decoration: const InputDecoration(
               hintText: "Note something here",
