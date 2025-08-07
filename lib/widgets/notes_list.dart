@@ -20,7 +20,6 @@ class NotesList extends StatefulWidget {
 
 class _NoteListState extends State<NotesList> {
   void _loadNotes() async {
-    //context.read<NotesListModel>().initTest();
     final notesContext = context.read<NotesListModel>();
     if (notesContext.isInStarMode) {
       await notesContext.getStarredFromDb();
@@ -36,9 +35,11 @@ class _NoteListState extends State<NotesList> {
     }
   }
 
-  void _handleLongPress() {
+  void _handleLongPress(Note note) {
     final appBarContext = context.read<AppBarModel>();
     appBarContext.toggleMode(AppBarMode.select);
+
+    context.read<NotesListModel>().selectedNotes[note.id!] = note;
   }
 
   @override
@@ -91,20 +92,20 @@ class _NoteListState extends State<NotesList> {
                             border: BoxBorder.all(color: CustomColors.purple),
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
-                          child: GestureDetector(
-                            onLongPress: _handleLongPress,
-                            child: Column(
-                              children: entry.value
-                                  .map(
-                                    (n) => NoteCard(
+                          child: Column(
+                            children: entry.value
+                                .map(
+                                  (n) => GestureDetector(
+                                    onLongPress: () => _handleLongPress(n),
+                                    child: NoteCard(
                                       isCheckBoxVisible:
                                           appBarMode == AppBarMode.select,
                                       note: n,
                                       onNoteDelete: _handleDeleteNote,
                                     ),
-                                  )
-                                  .toList(),
-                            ),
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ),
                       ],
@@ -115,12 +116,6 @@ class _NoteListState extends State<NotesList> {
             AddNoteCard(),
           ],
         ),
-        //child: StaggeredGrid.count(
-        //crossAxisCount: 2,
-        //mainAxisSpacing: 16,
-        //crossAxisSpacing: 24, // add some space
-        //children: widgetNotes,
-        //),
       ),
     );
   }
