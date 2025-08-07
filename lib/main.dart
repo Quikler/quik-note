@@ -69,30 +69,43 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> {
+  void _handlePopOfPopScope(bool didPop, Object? result) {
+    final appBarContext = context.read<AppBarModel>();
+    if (appBarContext.mode == AppBarMode.select) {
+      appBarContext.toggleMode(AppBarMode.initial);
+      return;
+    }
+
+    Navigator.maybePop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomBar(),
-      body: MainWrapper(
-        child: Column(
-          children: [
-            Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-            Expanded(child: NotesList()),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _handlePopOfPopScope,
+      child: Scaffold(
+        bottomNavigationBar: BottomBar(),
+        body: MainWrapper(
+          child: Column(
+            children: [
+              Align(alignment: Alignment.topCenter, child: AppBarWidget()),
+              Expanded(child: NotesList()),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Material(child: CreateNoteFormPage()),
-            ),
-          );
-        },
-        tooltip: 'Add note',
-        child: const Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Material(child: CreateNoteFormPage()),
+              ),
+            );
+          },
+          tooltip: 'Add note',
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
