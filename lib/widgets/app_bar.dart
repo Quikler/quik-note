@@ -96,8 +96,7 @@ class AppBarWidget extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.only(
-        // MediaQuery.of(context).padding.top indicates height of status bar in android and ios
-        top: deviceHeight(context) * 0.03 + MediaQuery.of(context).padding.top,
+        top: deviceHeight(context) * 0.03 + deviceStatusBar(context),
         bottom: deviceHeight(context) * 0.03,
         left: deviceWidth(context) * 0.05,
         right: deviceWidth(context) * 0.05,

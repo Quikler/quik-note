@@ -7,6 +7,7 @@ import 'package:quik_note/forms/edit_note_form.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
+import 'package:quik_note/utils/widget_helpers.dart';
 
 import 'package:quik_note/wrappers/main_wrapper.dart';
 import 'package:quik_note/wrappers/note_form_wrapper.dart';
@@ -224,7 +225,7 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 75,
+          toolbarHeight: noteFormPageAppBarHeight(),
           actions: [
             // The rightest button in actions
             Padding(
@@ -267,14 +268,17 @@ class _EditNoteFormPageState extends State<EditNoteFormPage> {
           foregroundColor: Colors.white,
         ),
         body: MainWrapper(
-          child: SingleChildScrollView(
-            child: NoteFormWrapper(
-              child: EditNoteForm(
-                note: widget.note,
-                titleController: _titleController,
-                contentController: _contentController,
-                titleFocusNode: titleFocusNode,
-                contentFocusNode: contentFocusNode,
+          child: SizedBox(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: NoteFormWrapper(
+                child: EditNoteForm(
+                  note: widget.note,
+                  titleController: _titleController,
+                  contentController: _contentController,
+                  titleFocusNode: titleFocusNode,
+                  contentFocusNode: contentFocusNode,
+                ),
               ),
             ),
           ),

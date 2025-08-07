@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/models/note.dart';
+import 'package:quik_note/utils/widget_helpers.dart';
 
 class EditNoteForm extends StatefulWidget {
   final Note note;
@@ -70,7 +71,7 @@ class _EditNoteFormState extends State<EditNoteForm> {
             ),
             focusNode: widget.contentFocusNode,
             style: TextStyle(color: CustomColors.purple),
-            minLines: 6,
+            minLines: linesByLineHeight(context, 0.6),
             keyboardType: TextInputType.multiline,
             maxLines: null,
           ),

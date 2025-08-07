@@ -7,6 +7,7 @@ import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/helpers.dart';
+import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/wrappers/note_form_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
@@ -188,7 +189,7 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 75,
+          toolbarHeight: noteFormPageAppBarHeight(),
           actions: [
             // The rightest button in actions
             Padding(
