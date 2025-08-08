@@ -82,8 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBarContext = context.watch<AppBarModel>();
+    bool canPop = appBarContext.mode == AppBarMode.initial;
+
     return PopScope(
-      canPop: false,
+      canPop: canPop,
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
         bottomNavigationBar: BottomBar(),
