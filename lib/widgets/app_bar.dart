@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db.dart';
+import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/utils/widget_helpers.dart';

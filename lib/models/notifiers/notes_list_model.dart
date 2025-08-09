@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quik_note/data/db.dart';
+import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/models/note.dart';
 
 class NotesListModel extends ChangeNotifier {
@@ -96,11 +96,6 @@ class NotesListModel extends ChangeNotifier {
     starredNotes = await getNotes("starred = 1");
     notifyListeners();
   }
-
-  //Future<void> whereFromDb() async {
-  //notes = await getNotes("starred = 1");
-  //notifyListeners();
-  //}
 
   void assignFromBuffer() {
     notes = bufferNotes;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db.dart';
+import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';

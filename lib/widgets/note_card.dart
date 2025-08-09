@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db.dart';
+import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
@@ -213,10 +213,6 @@ class _NoteCardState extends State<NoteCard> {
                         ),
                         onPressed: _handleStarPress,
                       ),
-                //Visibility(
-                //visible: widget.isCheckBoxVisible,
-                //child: Checkbox(onChanged: _handleCheck, value: isChecked),
-                //),
               ],
             ),
           ),
