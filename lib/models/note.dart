@@ -1,3 +1,5 @@
+import 'package:quik_note/utils/helpers.dart';
+
 class Note {
   final int? id;
   final String? title;
@@ -22,7 +24,7 @@ class Note {
       'content': content,
       'creationTime': creationTime.toString(),
       'lastEditedTime': lastEditedTime?.toString(),
-      'starred': starred ? 1 : 0,
+      'starred': starred.toInt(),
     };
   }
 

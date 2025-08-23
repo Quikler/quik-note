@@ -25,3 +25,11 @@ extension IterableExtensions<E> on Iterable<E> {
         map..putIfAbsent(keyFunction(element), () => <E>[]).add(element),
   );
 }
+
+extension IntExtensions on int {
+  bool toBool() => this == 0 ? false : true;
+}
+
+extension BoolExtensions on bool {
+  int toInt() => this ? 1 : 0;
+}
