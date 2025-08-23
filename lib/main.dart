@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/bottom_bar.dart';
 import 'package:quik_note/widgets/notes_list.dart';
+import 'package:quik_note/widgets/todos_list.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -70,6 +72,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Widget> carouselPages = [NotesList(), TodosList()];
+
   void _handlePopOfPopScope(bool didPop, Object? result) {
     final appBarContext = context.read<AppBarModel>();
     if (appBarContext.mode == AppBarMode.select) {
@@ -94,7 +98,16 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-              Expanded(child: NotesList()),
+              Expanded(
+                child: CarouselSlider(
+                  items: carouselPages,
+                  options: CarouselOptions(
+                    height: double.infinity,
+                    viewportFraction: 1,
+                    enableInfiniteScroll: false,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
