@@ -28,16 +28,18 @@ class _CheckboxTextState extends State<CheckboxText> {
   _handleChecked(bool? value) {
     widget.onChecked?.call(value);
     setState(() {
-      _checked = value ?? false;
+      _striked = _checked = value ?? false;
     });
   }
 
   bool _checked = false;
+  bool _striked = false;
 
   @override
   void initState() {
     super.initState();
     _checked = widget.isChecked;
+    _striked = _checked;
   }
 
   @override
@@ -49,6 +51,7 @@ class _CheckboxTextState extends State<CheckboxText> {
           child: Text(
             widget.text,
             style: TextStyle(
+              decoration: _striked ? TextDecoration.lineThrough : null,
               fontSize: widget.fontSize,
               color: CustomColors.purple,
               fontWeight: widget.fontWeight,
