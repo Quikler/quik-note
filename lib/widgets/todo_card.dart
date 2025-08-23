@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quik_note/data/db_todo.dart';
+import 'package:quik_note/models/todo.dart';
 import 'package:quik_note/viewmodels/todo_vm.dart';
 import 'package:quik_note/widgets/checkbox_text.dart';
 
@@ -30,18 +32,33 @@ class _TodoCardState extends State<TodoCard> {
     //);
   }
 
-  void _handleChildCheck(int id, bool? checked) {
+  Future _handleChildCheck(int id, bool checked) async {
     final child = _children.firstWhere((child) => child.id == id);
-    print("Checked ${child.title}");
     setState(() {
-      child.checked = checked ?? false;
+      child.checked = checked;
     });
+
+    final updatedTodo = Todo(
+      child.id,
+      child.title,
+      widget.todo.id,
+      child.checked,
+    );
+
+    await updateTodo(updatedTodo);
   }
 
-  void _handleCheck(bool? checked) {
-    setState(() {
-      _isTitleChecked = checked ?? false;
-    });
+  Future _handleCheck(bool? checked) async {
+    _isTitleChecked = checked ?? false;
+
+    final updatedTodo = Todo(
+      widget.todo.id,
+      widget.todo.title,
+      null,
+      _isTitleChecked,
+    );
+
+    await updateTodo(updatedTodo);
   }
 
   @override
@@ -94,7 +111,7 @@ class _TodoCardState extends State<TodoCard> {
                               fontWeight: FontWeight.w700,
                               isChecked: child.checked,
                               onChecked: (bool? checked) =>
-                                  _handleChildCheck(child.id, checked),
+                                  _handleChildCheck(child.id, checked ?? false),
                             );
                           }).toList(),
                         ),

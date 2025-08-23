@@ -27,13 +27,21 @@ class _TodosListState extends State<TodosList> {
       ]);
 
       final parentChildrenVms = parentChildren.map(
-        (child) => TodoVm(child.id!, child.title, null),
+        (child) => TodoVm(
+          child.id!,
+          child.title,
+          null,
+          child.checked,
+          child.completed,
+        ),
       );
 
       final currentParentVm = TodoVm(
         currentParent.id!,
         currentParent.title,
         parentChildrenVms,
+        currentParent.checked,
+        currentParent.completed,
       );
       parentVms.add(currentParentVm);
     }
