@@ -23,46 +23,16 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
   bool _isSaveButtonVisible = false;
 
   CheckboxTextfieldVm? _firstVm;
-  List<CheckboxTextfieldVm> _checkBoxChildren = <CheckboxTextfieldVm>[];
-
-  final FocusNode contentFocusNode = FocusNode();
+  final _checkBoxChildren = <CheckboxTextfieldVm>[];
+  int _currChildIndex = 0;
 
   void _handleBackButtonPressed() => _pop();
   void _handleSaveButtonPressed() => _pop();
   void _pop() => Navigator.maybePop(context);
-
-  void _handlePopOfPopScope(bool didPop, Object? result) async {
-    await _insertNewTodoWithPop();
-  }
-
-  void _handleOnFieldsChange(
-    CheckboxTextfieldVm firstVm,
-    List<CheckboxTextfieldVm> checkBoxChildren,
-  ) {
-    setState(() {
-      final title = firstVm.title;
-      if (!title.isNullOrWhiteSpace) {
-        _isSaveButtonVisible = true;
-        _appTitle = title ?? "";
-      } else {
-        _appTitle = _untitled;
-      }
-    });
-
-    _firstVm = firstVm;
-    _checkBoxChildren = checkBoxChildren;
-  }
+  void _handlePopOfPopScope(bool didPop, Object? result) async =>
+      await _insertNewTodoWithPop();
 
   Future<void> _insertNewTodoWithChildren() async {
-    final title = _firstVm!.title;
-    if (title.isNullOrWhiteSpace) {
-      return;
-    }
-
-    if (_firstVm == null) {
-      return;
-    }
-
     final newTodo = Todo(null, _firstVm!.title!, null, _firstVm!.isChecked);
     final newTodoId = await insertTodo(newTodo);
 
@@ -84,11 +54,115 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
 
       await insertTodos(childrenOfTodo);
     }
-}
+  }
 
   Future<void> _insertNewTodoWithPop() async {
     await _insertNewTodoWithChildren();
     _pop();
+  }
+
+  _handleChildVmTextChanged(CheckboxTextfieldVm sender, String value) {
+    // value not empty and child text is empty
+    if (sender.isTextEmpty() && !value.isNullOrWhiteSpace) {
+      setState(() {
+        _checkBoxChildren[_currChildIndex].isDisabled = false;
+        _currChildIndex++;
+
+        final nextChild = CheckboxTextfieldVm(
+          hint: "Todo something...",
+          fontSize: 18,
+        );
+        nextChild.onTextChanged = (String val) =>
+            _handleChildVmTextChanged(nextChild, val);
+        nextChild.onChecked = (bool? checked) =>
+            _handleCheckboxChecked(nextChild, checked);
+
+        _checkBoxChildren.add(nextChild);
+      });
+
+      // value is empty -> remove child
+    } else if (value.isNullOrWhiteSpace) {
+      setState(() {
+        final indexOfSender = _checkBoxChildren.indexOf(sender);
+        _checkBoxChildren.removeAt(indexOfSender);
+        _currChildIndex--;
+      });
+    }
+
+    sender.title = value;
+  }
+
+  _handleFirstVmTextChanged(String value) {
+    setState(() {
+      final title = _firstVm?.title;
+      if (!title.isNullOrWhiteSpace) {
+        _isSaveButtonVisible = true;
+        _appTitle = title ?? "";
+      } else {
+        _appTitle = _untitled;
+      }
+    });
+
+    if (_firstVm!.isTextEmpty() && !value.isNullOrWhiteSpace) {
+      setState(() {
+        for (var i = 0; i < _currChildIndex + 1; i++) {
+          _checkBoxChildren[i].isDisabled = false;
+        }
+        _currChildIndex++;
+
+        // second child
+        final nextChild = CheckboxTextfieldVm(
+          hint: "Todo something...",
+          fontSize: 18,
+        );
+        nextChild.onTextChanged = (String val) =>
+            _handleChildVmTextChanged(nextChild, val);
+        nextChild.onChecked = (bool? checked) =>
+            _handleCheckboxChecked(nextChild, checked);
+
+        _checkBoxChildren.add(nextChild);
+      });
+    } else if (value.isNullOrWhiteSpace) {
+      _checkBoxChildren.removeAt(_currChildIndex - 1);
+      for (var child in _checkBoxChildren) {
+        child.isDisabled = true;
+      }
+
+      _currChildIndex--;
+    }
+
+    _firstVm!.title = value;
+  }
+
+  _handleCheckboxChecked(CheckboxTextfieldVm sender, bool? checked) {
+    setState(() {
+      sender.isChecked = checked ?? false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firstVm = CheckboxTextfieldVm(
+      hint: "Title",
+      isDisabled: false,
+      fontSize: 24,
+      onTextChanged: _handleFirstVmTextChanged,
+    );
+    _firstVm?.onChecked = (bool? checked) =>
+        _handleCheckboxChecked(_firstVm!, checked);
+
+    final firstChild = CheckboxTextfieldVm(
+      hint: "Todo something...",
+      fontSize: 18,
+    );
+    firstChild.onTextChanged = (String value) =>
+        _handleChildVmTextChanged(firstChild, value);
+    firstChild.onChecked = (bool? checked) =>
+        _handleCheckboxChecked(firstChild, checked);
+
+    _checkBoxChildren.add(firstChild);
   }
 
   @override
@@ -132,7 +206,8 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
           child: SingleChildScrollView(
             child: NoteFormWrapper(
               child: CreateTodoForm(
-                onFieldsChange: _handleOnFieldsChange,
+                firstVm: _firstVm!,
+                checkBoxChildren: _checkBoxChildren,
               ),
             ),
           ),
