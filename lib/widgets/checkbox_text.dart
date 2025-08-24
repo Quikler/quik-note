@@ -8,6 +8,7 @@ class CheckboxText extends StatefulWidget {
   final FontWeight? fontWeight;
   final double? fontSize;
   final bool isChecked;
+  final bool truncateText;
   final String? hint;
 
   const CheckboxText(
@@ -15,6 +16,7 @@ class CheckboxText extends StatefulWidget {
     super.key,
     this.fontSize,
     this.isChecked = false,
+    this.truncateText = false,
     this.hint,
     this.fontWeight,
     this.onChecked,
@@ -55,6 +57,7 @@ class _CheckboxTextState extends State<CheckboxText> {
           child: Text(
             widget.text,
             style: TextStyle(
+              overflow: widget.truncateText ? TextOverflow.ellipsis : null,
               decoration: _striked ? TextDecoration.lineThrough : null,
               fontSize: widget.fontSize,
               color: CustomColors.purple,
