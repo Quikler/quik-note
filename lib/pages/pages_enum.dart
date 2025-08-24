@@ -1,0 +1,1 @@
+enum PagesEnum { notes, todos }

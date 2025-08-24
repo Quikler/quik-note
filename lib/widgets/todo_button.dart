@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quik_note/models/notifiers/current_page_model.dart';
+import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
@@ -10,6 +13,10 @@ class TodoButton extends StatefulWidget {
 }
 
 class _TodoButtonState extends State<TodoButton> {
+  void _handleButtonPress() {
+    context.read<CurrentPageModel>().changePage(PagesEnum.todos);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +28,7 @@ class _TodoButtonState extends State<TodoButton> {
         ).withOpacity(0.12),
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: _handleButtonPress,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,

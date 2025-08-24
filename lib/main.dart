@@ -1,15 +1,14 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
+import 'package:quik_note/models/notifiers/current_page_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/bottom_bar.dart';
-import 'package:quik_note/widgets/notes_list.dart';
-import 'package:quik_note/widgets/todos_list.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -35,6 +34,7 @@ Future main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => NotesListModel()),
           ChangeNotifierProvider(create: (_) => AppBarModel()),
+          ChangeNotifierProvider(create: (_) => CurrentPageModel()),
         ], // TODO: make this shit not global across whole app if possible of course
         child: MyApp(),
       ),
@@ -72,8 +72,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Widget> carouselPages = [NotesList(), TodosList()];
-
   void _handlePopOfPopScope(bool didPop, Object? result) {
     final appBarContext = context.read<AppBarModel>();
     if (appBarContext.mode == AppBarMode.select) {
@@ -85,9 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<CurrentPageModel>().initPage(PagesEnum.notes);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appBarContext = context.watch<AppBarModel>();
     bool canPop = appBarContext.mode == AppBarMode.initial;
+
+    final currentPageContext = context.watch<CurrentPageModel>();
 
     return PopScope(
       canPop: canPop,
@@ -98,16 +104,18 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-              Expanded(
-                child: CarouselSlider(
-                  items: carouselPages,
-                  options: CarouselOptions(
-                    height: double.infinity,
-                    viewportFraction: 1,
-                    enableInfiniteScroll: false,
-                  ),
-                ),
-              ),
+              Expanded(child: currentPageContext.currentPage!),
+              //Expanded(
+              //child: CarouselSlider(
+              //disableGesture: true,
+              //items: carouselPages,
+              //options: CarouselOptions(
+              //height: double.infinity,
+              //viewportFraction: 1,
+              //enableInfiniteScroll: false,
+              //),
+              //),
+              //),
             ],
           ),
         ),
