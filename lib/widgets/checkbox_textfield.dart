@@ -53,6 +53,7 @@ class _CheckboxTextfieldState extends State<CheckboxTextfield> {
     return Row(
       children: [
         Checkbox(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           value: widget.isChecked,
           onChanged: widget.isDisabled ? null : _handleChecked,
         ),

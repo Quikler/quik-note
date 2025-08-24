@@ -46,7 +46,11 @@ class _CheckboxTextState extends State<CheckboxText> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Checkbox(value: _checked, onChanged: _handleChecked),
+        Checkbox(
+          value: _checked,
+          onChanged: _handleChecked,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        ),
         Expanded(
           child: Text(
             widget.text,
