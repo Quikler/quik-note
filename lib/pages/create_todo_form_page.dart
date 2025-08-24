@@ -39,13 +39,6 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
     CheckboxTextfieldVm firstVm,
     List<CheckboxTextfieldVm> checkBoxChildren,
   ) {
-    print("\n_handleOnFielsChange");
-    print("First vm ${firstVm.title}");
-    print(
-      "CheckboxChildren ${checkBoxChildren.map((child) => child.title).join(", ")}",
-    );
-    print("\n=================================");
-
     setState(() {
       final title = firstVm.title;
       if (!title.isNullOrWhiteSpace) {
@@ -66,8 +59,6 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
       return;
     }
 
-    //final todoModel = context.read<CreateTodoModel>();
-    //final firstVm = todoModel.firstCheckBox;
     if (_firstVm == null) {
       return;
     }
@@ -81,16 +72,19 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
             (checkBoxChild) =>
                 !checkBoxChild.isDisabled && !checkBoxChild.isTextEmpty(),
           )
-          .map((checkBoxChild) => Todo(null, checkBoxChild.title!, newTodoId))
+          .map(
+            (checkBoxChild) => Todo(
+              null,
+              checkBoxChild.title!,
+              newTodoId,
+              checkBoxChild.isChecked,
+            ),
+          )
           .toList();
 
       await insertTodos(childrenOfTodo);
     }
-
-    //if (mounted) {
-    //context.read<NotesListModel>().insertStartNote(newNoteWithId);
-    //}
-  }
+}
 
   Future<void> _insertNewTodoWithPop() async {
     await _insertNewTodoWithChildren();
@@ -138,10 +132,7 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
           child: SingleChildScrollView(
             child: NoteFormWrapper(
               child: CreateTodoForm(
-                //titleController: _titleController,
                 onFieldsChange: _handleOnFieldsChange,
-                //contentController: _contentController,
-                //contentFocusNode: contentFocusNode,
               ),
             ),
           ),
