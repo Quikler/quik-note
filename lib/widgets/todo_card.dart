@@ -17,7 +17,7 @@ class TodoCard extends StatefulWidget {
 }
 
 class _TodoCardState extends State<TodoCard> {
-  final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
+  final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(24));
 
   Iterable<TodoVm> _children = [];
   bool _isTitleChecked = false;
@@ -80,6 +80,7 @@ class _TodoCardState extends State<TodoCard> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        borderRadius: _borderRadius,
         onTap: _handleTap,
         child: Ink(
           decoration: BoxDecoration(
