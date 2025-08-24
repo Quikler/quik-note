@@ -21,6 +21,7 @@ class _TodoCardState extends State<TodoCard> {
 
   Iterable<TodoVm> _children = [];
   bool _isTitleChecked = false;
+  bool _todoExpanded = true;
 
   void _handleTap() {
     return;
@@ -61,6 +62,12 @@ class _TodoCardState extends State<TodoCard> {
     await updateTodo(updatedTodo);
   }
 
+  void _handleDownArrowTap() {
+    setState(() {
+      _todoExpanded = !_todoExpanded;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -79,48 +86,75 @@ class _TodoCardState extends State<TodoCard> {
             color: Color(0xFFFBFBF9),
             borderRadius: _borderRadius,
           ),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    spacing: 6,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CheckboxText(
-                              widget.todo.title,
-                              fontWeight: FontWeight.w700,
-                              isChecked: _isTitleChecked,
-                              onChecked: _handleCheck,
-                            ),
-                          ),
-                          //Text('right'),
-                        ],
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 28),
+                      Expanded(
                         child: Column(
-                          children: _children.map((child) {
-                            return CheckboxText(
-                              child.title,
-                              fontWeight: FontWeight.w700,
-                              isChecked: child.checked,
-                              onChecked: (bool? checked) =>
-                                  _handleChildCheck(child.id, checked ?? false),
-                            );
-                          }).toList(),
+                          spacing: 6,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 16,
+                              children: [
+                                Expanded(
+                                  child: CheckboxText(
+                                    widget.todo.title,
+                                    fontWeight: FontWeight.w700,
+                                    isChecked: _isTitleChecked,
+                                    onChecked: _handleCheck,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: _handleDownArrowTap,
+                                  borderRadius: _borderRadius,
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      color: Color(0x4D380099),
+                                      borderRadius: _borderRadius,
+                                    ),
+                                    //margin: EdgeInsets.all(16),
+                                    child: Icon(
+                                      _todoExpanded
+                                          ? Icons.keyboard_arrow_down
+                                          : Icons.keyboard_arrow_up,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_todoExpanded)
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 28),
+                                child: Column(
+                                  children: _children.map((child) {
+                                    return CheckboxText(
+                                      child.title,
+                                      truncateText: true,
+                                      fontWeight: FontWeight.w700,
+                                      isChecked: child.checked,
+                                      onChecked: (bool? checked) =>
+                                          _handleChildCheck(
+                                            child.id,
+                                            checked ?? false,
+                                          ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
