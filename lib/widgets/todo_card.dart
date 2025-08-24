@@ -80,7 +80,7 @@ class _TodoCardState extends State<TodoCard> {
             borderRadius: _borderRadius,
           ),
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
