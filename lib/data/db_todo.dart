@@ -8,7 +8,7 @@ Future<int> insertTodo(Todo todo) async {
   return await db.insert('todos', todo.toMap());
 }
 
-Future<void> insertTodos(List<Todo> todos) async {
+Future<void> insertTodos(Iterable<Todo> todos) async {
   final db = await getNotesDb();
   final batch = db.batch();
 
@@ -41,6 +41,17 @@ Future<List<Todo>> getTodos([String? where, List<Object?>? whereArgs]) async {
         in todoMaps)
       Todo(id, title, parentId, checked.toBool(), completed.toBool()),
   ];
+}
+
+Future<void> updateTodos(Iterable<Todo> todos) async {
+  final db = await getNotesDb();
+  final batch = db.batch();
+
+  for (var todo in todos) {
+    batch.update('todos', todo.toMap(), where: 'id = ?', whereArgs: [todo.id]);
+  }
+
+  await batch.commit(noResult: true);
 }
 
 Future<int> updateTodo(Todo todo) async {
