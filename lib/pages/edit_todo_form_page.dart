@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quik_note/data/db_todo.dart';
 import 'package:quik_note/forms/create_todo_form.dart';
+import 'package:quik_note/models/notifiers/todos_list_model.dart';
 import 'package:quik_note/models/todo.dart';
 import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
@@ -36,10 +38,20 @@ class _EditTodoFormPageState extends State<EditTodoFormPage> {
   void _handlePopOfPopScope(bool didPop, Object? result) async =>
       await _updateTodoWithPop();
 
+  bool _filterChildren(CheckboxTextfieldVm checkBoxChild) =>
+      !checkBoxChild.isDisabled && !checkBoxChild.isTextEmpty();
+
   Future<void> _updateTodoWithChildren() async {
     if (_firstVm!.title.isNullOrWhiteSpace) {
       return;
     }
+
+    final todoVm = TodosListModel.todoToVm(
+      _firstVm!,
+      _checkBoxChildren.where(_filterChildren).toList(),
+    );
+
+    context.read<TodosListModel>().updateTodo(todoVm);
 
     final todoToUpdate = Todo(
       widget.todo.id,
@@ -52,10 +64,7 @@ class _EditTodoFormPageState extends State<EditTodoFormPage> {
 
     if (mounted) {
       final childrenOfTodo = _checkBoxChildren
-          .where(
-            (checkBoxChild) =>
-                !checkBoxChild.isDisabled && !checkBoxChild.isTextEmpty(),
-          )
+          .where(_filterChildren)
           .map(
             (checkBoxChild) => Todo(
               checkBoxChild.id,
@@ -69,10 +78,14 @@ class _EditTodoFormPageState extends State<EditTodoFormPage> {
       final childrenToUpdate = childrenOfTodo.where(
         (child) => child.id != null,
       );
-      await updateTodos(childrenToUpdate);
+      if (childrenToUpdate.isNotEmpty) {
+        await updateTodos(childrenToUpdate);
+      }
 
       final childrenToAdd = childrenOfTodo.where((child) => child.id == null);
-      await insertTodos(childrenToAdd);
+      if (childrenToAdd.isNotEmpty) {
+        await insertTodos(childrenToAdd);
+      }
 
       final initialChildrenOfTodo = _initialCheckBoxChildren.map(
         (initialCheckBoxChild) => Todo(

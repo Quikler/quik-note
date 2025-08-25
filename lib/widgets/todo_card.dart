@@ -31,7 +31,7 @@ class _TodoCardState extends State<TodoCard> {
     );
   }
 
-  Future _handleChildCheck(int id, bool checked) async {
+  Future _handleChildCheck(int? id, bool checked) async {
     final child = widget.todo.children.firstWhere((child) => child.id == id);
     setState(() {
       child.checked = checked;
@@ -132,6 +132,7 @@ class _TodoCardState extends State<TodoCard> {
                                 child: Column(
                                   children: widget.todo.children.map((child) {
                                     return CheckboxText(
+                                      key: UniqueKey(), // required UniqueKey cuz flutter is shit
                                       child.title,
                                       truncateText: true,
                                       fontWeight: FontWeight.w700,

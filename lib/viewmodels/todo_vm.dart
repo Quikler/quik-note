@@ -1,5 +1,5 @@
 class TodoVm {
-  int id;
+  int? id;
   String title;
   List<TodoVm> children = [];
   bool checked;
