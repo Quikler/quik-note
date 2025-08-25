@@ -8,6 +8,7 @@ class CheckboxTextfield extends StatefulWidget {
   final void Function(bool hasFocus)? onTextFocus;
 
   final double? fontSize;
+  final String? initialValue;
   final bool isDisabled;
   final bool isChecked;
   final String? hint;
@@ -15,6 +16,7 @@ class CheckboxTextfield extends StatefulWidget {
   const CheckboxTextfield({
     super.key,
     this.fontSize,
+    this.initialValue,
     this.isDisabled = true,
     this.isChecked = false,
     this.hint,
@@ -58,7 +60,8 @@ class _CheckboxTextfieldState extends State<CheckboxTextfield> {
           onChanged: widget.isDisabled ? null : _handleChecked,
         ),
         Expanded(
-          child: TextField(
+          child: TextFormField(
+            initialValue: widget.initialValue,
             inputFormatters: [FilteringTextInputFormatter.deny('\n')],
             textInputAction: TextInputAction.next,
             maxLines: null,

@@ -10,6 +10,7 @@ CheckboxTextfield convertToCheckboxTextfield(
   hint: vm.hint,
   isDisabled: vm.isDisabled,
   isChecked: vm.isChecked,
+  initialValue: vm.title,
   fontSize: vm.fontSize,
   onChecked: vm.onChecked,
   onTextChanged: vm.onTextChanged,
