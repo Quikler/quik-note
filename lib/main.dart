@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/current_page_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/pages/create_todo_form_page.dart';
 import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/bottom_bar.dart';
@@ -82,6 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.maybePop(context);
   }
 
+  void _handleFloatingButtonPressed() {
+    final currentPageContext = context.read<CurrentPageModel>();
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            Material(child: currentPageContext.currentPage!.formPageToNavigate),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-              Expanded(child: currentPageContext.currentPage!),
+              Expanded(child: currentPageContext.currentPage!.widget!),
               //Expanded(
               //child: CarouselSlider(
               //disableGesture: true,
@@ -120,13 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Material(child: CreateNoteFormPage()),
-              ),
-            );
-          },
+          onPressed: _handleFloatingButtonPressed,
           tooltip: 'Add note',
           child: const Icon(Icons.add),
         ),

@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:quik_note/pages/create_note_form_page.dart';
+import 'package:quik_note/pages/create_todo_form_page.dart';
 import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/widgets/notes_list.dart';
 import 'package:quik_note/widgets/todos_list.dart';
 
+class CurrentPage {
+  Widget? widget;
+  PagesEnum pageEnum;
+  Widget? formPageToNavigate;
+
+  CurrentPage(this.widget, this.pageEnum, this.formPageToNavigate);
+}
+
 class CurrentPageModel extends ChangeNotifier {
-  Widget? currentPage;
+  CurrentPage? currentPage;
 
   void initPage(PagesEnum page) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -19,12 +29,12 @@ class CurrentPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Widget _switchPagesEnum(PagesEnum pagesEnum) {
+  CurrentPage _switchPagesEnum(PagesEnum pagesEnum) {
     switch (pagesEnum) {
       case PagesEnum.notes:
-        return NotesList();
+        return CurrentPage(NotesList(), PagesEnum.notes, CreateNoteFormPage());
       case PagesEnum.todos:
-        return TodosList();
+        return CurrentPage(TodosList(), PagesEnum.todos, CreateTodoFormPage());
     }
   }
 }
