@@ -26,13 +26,8 @@ class _TodosListState extends State<TodosList> {
       ]);
 
       final parentChildrenVms = parentChildren.map(
-        (child) => TodoVm(
-          child.id!,
-          child.title,
-          null,
-          child.checked,
-          child.completed,
-        ),
+        (child) =>
+            TodoVm(child.id!, child.title, [], child.checked, child.completed),
       );
 
       final currentParentVm = TodoVm(
@@ -69,7 +64,7 @@ class _TodosListState extends State<TodosList> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 12,
-                  children: [TodoCard(todo: todo, children: todo.children)],
+                  children: [TodoCard(todo: todo)],
                 );
               }).toList(),
             ),
