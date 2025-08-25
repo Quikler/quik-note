@@ -33,7 +33,7 @@ class _TodosListState extends State<TodosList> {
       final currentParentVm = TodoVm(
         currentParent.id!,
         currentParent.title,
-        parentChildrenVms,
+        parentChildrenVms.toList(),
         currentParent.checked,
         currentParent.completed,
       );

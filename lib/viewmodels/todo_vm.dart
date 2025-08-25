@@ -1,7 +1,7 @@
 class TodoVm {
   int id;
   String title;
-  Iterable<TodoVm> children = [];
+  List<TodoVm> children = [];
   bool checked;
   bool completed;
 
