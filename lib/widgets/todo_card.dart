@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:quik_note/data/db_todo.dart';
 import 'package:quik_note/models/todo.dart';
+import 'package:quik_note/pages/edit_todo_form_page.dart';
 import 'package:quik_note/viewmodels/todo_vm.dart';
 import 'package:quik_note/widgets/checkbox_text.dart';
 
 class TodoCard extends StatefulWidget {
-  const TodoCard({super.key, required this.todo, this.children});
+  const TodoCard({super.key, required this.todo});
 
   final TodoVm todo;
-  final Iterable<TodoVm>? children;
 
   @override
   State<StatefulWidget> createState() {
@@ -19,22 +19,20 @@ class TodoCard extends StatefulWidget {
 class _TodoCardState extends State<TodoCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(24));
 
-  Iterable<TodoVm> _children = [];
   bool _isTitleChecked = false;
   bool _todoExpanded = true;
 
   void _handleTap() {
-    return;
-    //Navigator.of(context).push(
-    //MaterialPageRoute(
-    //builder: (context) =>
-    //Material(child: EditNoteFormPage(note: widget.todo)),
-    //),
-    //);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            Material(child: EditTodoFormPage(todo: widget.todo)),
+      ),
+    );
   }
 
   Future _handleChildCheck(int id, bool checked) async {
-    final child = _children.firstWhere((child) => child.id == id);
+    final child = widget.todo.children.firstWhere((child) => child.id == id);
     setState(() {
       child.checked = checked;
     });
@@ -72,7 +70,6 @@ class _TodoCardState extends State<TodoCard> {
   void initState() {
     super.initState();
     _isTitleChecked = widget.todo.checked;
-    _children = widget.children ?? [];
   }
 
   @override
@@ -133,7 +130,7 @@ class _TodoCardState extends State<TodoCard> {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 28),
                                 child: Column(
-                                  children: _children.map((child) {
+                                  children: widget.todo.children.map((child) {
                                     return CheckboxText(
                                       child.title,
                                       truncateText: true,

@@ -26,6 +26,16 @@ class Todo {
   }
 
   @override
+  // ignore: hash_and_equals
+  bool operator ==(covariant Todo other) {
+    return id == other.id &&
+        title == other.title &&
+        parentId == other.parentId &&
+        checked == other.checked &&
+        completed == other.completed;
+  }
+
+  @override
   String toString() {
     return 'Todo{id: $id, title: $title, parentId: $parentId, checked: $checked, completed: $completed}';
   }

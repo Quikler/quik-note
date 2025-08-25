@@ -1,6 +1,8 @@
 import 'package:quik_note/utils/helpers.dart';
 
 class CheckboxTextfieldVm {
+  int? id;
+
   bool isDisabled;
   bool isChecked;
 
@@ -15,6 +17,7 @@ class CheckboxTextfieldVm {
   void Function(String value)? onTextChanged;
 
   CheckboxTextfieldVm({
+    this.id,
     this.isDisabled = true,
     this.isChecked = false,
     this.fontSize,
