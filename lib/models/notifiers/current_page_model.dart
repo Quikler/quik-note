@@ -9,8 +9,14 @@ class CurrentPage {
   Widget? widget;
   PagesEnum pageEnum;
   Widget? formPageToNavigate;
+  String? navigateTooltip;
 
-  CurrentPage(this.widget, this.pageEnum, this.formPageToNavigate);
+  CurrentPage(
+    this.widget,
+    this.pageEnum,
+    this.formPageToNavigate,
+    this.navigateTooltip,
+  );
 }
 
 class CurrentPageModel extends ChangeNotifier {
@@ -32,9 +38,19 @@ class CurrentPageModel extends ChangeNotifier {
   CurrentPage _switchPagesEnum(PagesEnum pagesEnum) {
     switch (pagesEnum) {
       case PagesEnum.notes:
-        return CurrentPage(NotesList(), PagesEnum.notes, CreateNoteFormPage());
+        return CurrentPage(
+          NotesList(),
+          PagesEnum.notes,
+          CreateNoteFormPage(),
+          'Add note',
+        );
       case PagesEnum.todos:
-        return CurrentPage(TodosList(), PagesEnum.todos, CreateTodoFormPage());
+        return CurrentPage(
+          TodosList(),
+          PagesEnum.todos,
+          CreateTodoFormPage(),
+          'Add todo',
+        );
     }
   }
 }

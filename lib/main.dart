@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _handleFloatingButtonPressed,
-          tooltip: 'Add note',
+          tooltip: currentPageContext.currentPage!.navigateTooltip,
           child: const Icon(Icons.add),
         ),
       ),
