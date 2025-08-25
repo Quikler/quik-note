@@ -33,6 +33,10 @@ class _CreateTodoFormPageState extends State<CreateTodoFormPage> {
       await _insertNewTodoWithPop();
 
   Future<void> _insertNewTodoWithChildren() async {
+    if (_firstVm!.title.isNullOrWhiteSpace) {
+      return;
+    }
+
     final newTodo = Todo(null, _firstVm!.title!, null, _firstVm!.isChecked);
     final newTodoId = await insertTodo(newTodo);
 
