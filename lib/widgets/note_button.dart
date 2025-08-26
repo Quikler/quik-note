@@ -19,13 +19,24 @@ class _NoteButtonState extends State<NoteButton> {
 
   @override
   Widget build(BuildContext context) {
+    final currentPageEnum = context
+        .watch<CurrentPageModel>()
+        .currentPage
+        ?.pageEnum;
+
+    final isNotePage = currentPageEnum == PagesEnum.notes;
+
     return Container(
       decoration: BoxDecoration(
-        border: BoxBorder.all(color: Colors.red),
-        borderRadius: BorderRadius.all(Radius.circular(324)),
-        gradient: LinearGradient(
-          colors: [Color(0xFFFF3B3B), Color(0xFF992323)],
+        border: BoxBorder.all(
+          color: isNotePage ? Colors.red : Colors.white.withAlpha(80),
         ),
+        borderRadius: BorderRadius.all(Radius.circular(324)),
+        gradient: isNotePage
+            ? LinearGradient(colors: [Color(0xFFFF3B3B), Color(0xFF992323)])
+            : LinearGradient(
+                colors: [Color(0xFF3E15B9), Colors.white],
+              ).withOpacity(0.12),
       ),
       child: ElevatedButton(
         onPressed: _handleButtonPress,

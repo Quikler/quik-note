@@ -7,14 +7,12 @@ import 'package:quik_note/models/notifiers/app_bar_model.dart';
 import 'package:quik_note/models/notifiers/current_page_model.dart';
 import 'package:quik_note/models/notifiers/notes_list_model.dart';
 import 'package:quik_note/models/notifiers/todos_list_model.dart';
-import 'package:quik_note/pages/create_todo_form_page.dart';
 import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/bottom_bar.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'pages/create_note_form_page.dart';
 import 'wrappers/main_wrapper.dart';
 
 final appBarStyle = SystemUiOverlayStyle(
