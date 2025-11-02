@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/viewmodels/notes_viewmodel.dart';
-import 'package:quik_note/widgets/notes_list.dart';
+import 'package:quik_note/widgets/starred_notes_list.dart';
 import 'package:quik_note/wrappers/main_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 class StarredNotesPage extends StatefulWidget {
@@ -47,7 +47,7 @@ class _StarredNotesPageState extends State<StarredNotesPage> {
           foregroundColor: Colors.white,
         ),
         body: MainWrapper(
-          child: Column(children: [Expanded(child: NotesList())]),
+          child: Column(children: [Expanded(child: StarredNotesList())]),
         ),
       ),
     );

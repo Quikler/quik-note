@@ -34,7 +34,7 @@ abstract class BaseListViewModel<T> extends ChangeNotifier {
   @protected
   void setItems(List<T> items) {
     _items = items;
-    _filteredItems = items;
+    _filteredItems = List.from(items);
     _isSearchMode = false;
   }
   @protected

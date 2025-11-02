@@ -10,15 +10,9 @@ class NoteFormService {
     if (_cache.has(noteId)) {
       return _cache.get(noteId);
     }
-    final result = await _repository.getAll();
+    final result = await _repository.getById(noteId);
     return result.when(
-      success: (notes) {
-        try {
-          return notes.firstWhere((note) => note.id == noteId);
-        } catch (e) {
-          return null;
-        }
-      },
+      success: (note) => note,
       failure: (_, __) => null,
     );
   }

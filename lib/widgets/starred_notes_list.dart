@@ -11,19 +11,14 @@ import 'package:quik_note/widgets/note_card.dart';
 import 'package:quik_note/wrappers/main_wrapper_margin.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
 
-class NotesList extends StatefulWidget {
-  const NotesList({super.key});
+class StarredNotesList extends StatefulWidget {
+  const StarredNotesList({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NoteListState();
+  State<StatefulWidget> createState() => _StarredNotesListState();
 }
 
-class _NoteListState extends State<NotesList> {
-  void _loadNotes() async {
-    final notesViewModel = context.read<NotesViewModel>();
-    await notesViewModel.loadNotes();
-  }
-
+class _StarredNotesListState extends State<StarredNotesList> {
   void _handleDeleteNote(int? id) {
     if (id != null) {
       context.read<NotesViewModel>().deleteNote(id);
@@ -37,14 +32,6 @@ class _NoteListState extends State<NotesList> {
     if (note.id != null) {
       context.read<NotesViewModel>().toggleNoteSelection(note.id!);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadNotes();
-    });
   }
 
   @override
