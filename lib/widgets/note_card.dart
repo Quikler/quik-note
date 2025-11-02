@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/models/note.dart';
-import 'package:quik_note/models/notifiers/app_bar_model.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/pages/edit_note_form_page.dart';
 import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
-
 class NoteCard extends StatefulWidget {
   const NoteCard({
     super.key,
@@ -16,71 +14,53 @@ class NoteCard extends StatefulWidget {
     required this.isCheckBoxVisible,
     required this.onNoteDelete,
   });
-
   final Note note;
   final bool isCheckBoxVisible;
   final void Function(int? id) onNoteDelete;
-
   @override
   State<StatefulWidget> createState() {
     return _NoteCardState();
   }
 }
-
 class _NoteCardState extends State<NoteCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
-
   bool _isStarred = false;
-
   String _getNoteTitle() {
     final n = widget.note;
     if (n.title.isNullOrWhiteSpace) {
       return n.content?.trim() ?? "";
     }
-
     return n.title?.trim() ?? "";
   }
-
   String _getNoteContent() {
     final n = widget.note;
-
-    // if content is null or white space return empty string
     if (n.content.isNullOrWhiteSpace) {
       return "";
     }
-
     final splittedContent = n.content!.split('\n');
     splittedContent.removeWhere((c) => c.isNullOrWhiteSpace);
-
-    // if title is null or white space then content should not be empty
     if (n.title.isNullOrWhiteSpace) {
       if (splittedContent.length > 1) {
         return splittedContent[1];
       }
       return "";
     }
-
     return splittedContent[0];
   }
-
   String _formatCreationTime() {
     final formatter = DateFormat('MM-dd hh:mm');
-
-    // if lastEditedTime is presented display it instead of creationTime
     if (widget.note.lastEditedTime != null) {
       return formatter.format(widget.note.lastEditedTime!);
     }
-
     return formatter.format(widget.note.creationTime);
   }
-
   void _handleTap() {
-    if (context.read<AppBarModel>().mode == AppBarMode.select) {
-      final notesContext = context.read<NotesListModel>();
-      notesContext.toggleSelected(widget.note);
+    if (context.read<AppBarViewModel>().isSelectMode) {
+      if (widget.note.id != null) {
+        context.read<NotesViewModel>().toggleNoteSelection(widget.note.id!);
+      }
       return;
     }
-
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) =>
@@ -88,38 +68,30 @@ class _NoteCardState extends State<NoteCard> {
       ),
     );
   }
-
   void _handleCheck(bool? value) {
-    final notesContext = context.read<NotesListModel>();
-    notesContext.toggleSelected(widget.note);
+    if (widget.note.id != null) {
+      context.read<NotesViewModel>().toggleNoteSelection(widget.note.id!);
+    }
   }
-
   void _handleStarPress() async {
     final value = !_isStarred;
     setState(() {
       _isStarred = value;
     });
-
-    final updatedNote = widget.note.copyWith(starred: value);
-    await updateNote(updatedNote);
+    await context.read<NotesViewModel>().toggleStarred(widget.note);
   }
-
   @override
   void initState() {
     super.initState();
     _isStarred = widget.note.starred;
   }
-
   @override
   Widget build(BuildContext context) {
-    final isChecked = context.watch<NotesListModel>().selectedNotes.containsKey(
-      widget.note.id,
-    );
-
+    final isChecked = widget.note.id != null &&
+        context.watch<NotesViewModel>().selectedNoteIds.contains(widget.note.id!);
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        //borderRadius: _borderRadius,
         onTap: _handleTap,
         child: Ink(
           decoration: BoxDecoration(
@@ -127,35 +99,10 @@ class _NoteCardState extends State<NoteCard> {
             borderRadius: _borderRadius,
           ),
           child: Container(
-            //padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              //spacing: 12,
               children: [
-                //Container(
-                //alignment: Alignment.center,
-                //child: Container(
-                //padding: EdgeInsets.all(12),
-                //decoration: BoxDecoration(
-                //color: Colors.cyan,
-                //boxShadow: [
-                //BoxShadow(
-                //color: Colors.cyan.withAlpha(100),
-                //spreadRadius: 1,
-                //blurRadius: 7,
-                //offset: Offset(0, 4),
-                //),
-                //],
-                //borderRadius: BorderRadius.all(Radius.circular(50)),
-                //),
-                //child: Icon(
-                //Icons.shopping_cart,
-                //color: Color(0xFFFBFBF9),
-                //size: 48,
-                //),
-                //),
-                //),
                 Expanded(
                   child: Column(
                     spacing: 6,

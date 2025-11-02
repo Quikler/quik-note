@@ -2,39 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
-
 class CreateNoteForm extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController contentController;
   final FocusNode contentFocusNode;
-
   const CreateNoteForm({
     super.key,
     required this.titleController,
     required this.contentController,
     required this.contentFocusNode,
   });
-
   @override
   State<StatefulWidget> createState() {
     return _CreateNoteFormState();
   }
 }
-
 class _CreateNoteFormState extends State<CreateNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   _handleTitleSubmitted(String? value) {
     widget.contentFocusNode.requestFocus();
   }
-
   @override
   void initState() {
     super.initState();
-
     widget.contentFocusNode.requestFocus();
   }
-
   @override
   Widget build(BuildContext context) {
     return Form(

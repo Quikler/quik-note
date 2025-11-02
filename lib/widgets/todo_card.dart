@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quik_note/data/db_todo.dart';
-import 'package:quik_note/models/todo.dart';
+import 'package:provider/provider.dart';
+import 'package:quik_note/core/todo_cache.dart';
 import 'package:quik_note/pages/edit_todo_form_page.dart';
 import 'package:quik_note/viewmodels/todo_vm.dart';
+import 'package:quik_note/viewmodels/todos_viewmodel.dart';
 import 'package:quik_note/widgets/checkbox_text.dart';
 
 class TodoCard extends StatefulWidget {
@@ -18,46 +19,49 @@ class TodoCard extends StatefulWidget {
 
 class _TodoCardState extends State<TodoCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(24));
+  final _todoCache = TodoCache();
 
   bool _isTitleChecked = false;
   bool _todoExpanded = true;
 
-  void _handleTap() {
-    Navigator.of(context).push(
+  void _handleTap() async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) =>
-            Material(child: EditTodoFormPage(todo: widget.todo)),
+            Material(child: EditTodoFormPage(todo: _getDisplayedTodo())),
       ),
     );
+
+    if (mounted) {
+      if (widget.todo.id != null && _todoCache.has(widget.todo.id!)) {
+        setState(() {});
+      } else {
+        await context.read<TodosViewModel>().loadTodos();
+      }
+    }
+  }
+
+  TodoVm _getDisplayedTodo() {
+    if (widget.todo.id != null && _todoCache.has(widget.todo.id!)) {
+      return _todoCache.get(widget.todo.id!)!;
+    }
+    return widget.todo;
   }
 
   Future _handleChildCheck(int? id, bool checked) async {
-    final child = widget.todo.children.firstWhere((child) => child.id == id);
-    setState(() {
-      child.checked = checked;
-    });
-
-    final updatedTodo = Todo(
-      child.id,
-      child.title,
-      widget.todo.id,
-      child.checked,
-    );
-
-    await updateTodo(updatedTodo);
+    if (id != null) {
+      final child = widget.todo.children.firstWhere((child) => child.id == id);
+      setState(() {});
+      await context.read<TodosViewModel>().toggleTodoChecked(child);
+    }
   }
 
   Future _handleCheck(bool? checked) async {
-    _isTitleChecked = checked ?? false;
+    setState(() {
+      _isTitleChecked = checked ?? false;
+    });
 
-    final updatedTodo = Todo(
-      widget.todo.id,
-      widget.todo.title,
-      null,
-      _isTitleChecked,
-    );
-
-    await updateTodo(updatedTodo);
+    await context.read<TodosViewModel>().toggleTodoChecked(widget.todo);
   }
 
   void _handleDownArrowTap() {
@@ -69,11 +73,14 @@ class _TodoCardState extends State<TodoCard> {
   @override
   void initState() {
     super.initState();
-    _isTitleChecked = widget.todo.checked;
+    final displayedTodo = _getDisplayedTodo();
+    _isTitleChecked = displayedTodo.checked;
   }
 
   @override
   Widget build(BuildContext context) {
+    final displayedTodo = _getDisplayedTodo();
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -102,9 +109,9 @@ class _TodoCardState extends State<TodoCard> {
                               children: [
                                 Expanded(
                                   child: CheckboxText(
-                                    widget.todo.title,
+                                    displayedTodo.title,
                                     fontWeight: FontWeight.w700,
-                                    isChecked: _isTitleChecked,
+                                    isChecked: displayedTodo.checked,
                                     onChecked: _handleCheck,
                                   ),
                                 ),
@@ -116,7 +123,6 @@ class _TodoCardState extends State<TodoCard> {
                                       color: Color(0x4D380099),
                                       borderRadius: _borderRadius,
                                     ),
-                                    //margin: EdgeInsets.all(16),
                                     child: Icon(
                                       _todoExpanded
                                           ? Icons.keyboard_arrow_down
@@ -130,9 +136,9 @@ class _TodoCardState extends State<TodoCard> {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 28),
                                 child: Column(
-                                  children: widget.todo.children.map((child) {
+                                  children: displayedTodo.children.map((child) {
                                     return CheckboxText(
-                                      key: UniqueKey(), // required UniqueKey cuz flutter is shit
+                                      key: UniqueKey(),
                                       child.title,
                                       truncateText: true,
                                       fontWeight: FontWeight.w700,

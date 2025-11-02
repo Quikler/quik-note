@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/widgets/notes_list.dart';
 import 'package:quik_note/wrappers/main_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
-
 class StarredNotesPage extends StatefulWidget {
   const StarredNotesPage({super.key});
-
   @override
   State<StatefulWidget> createState() => _StarredNotesPageState();
 }
-
 class _StarredNotesPageState extends State<StarredNotesPage> {
   void _handleBackButtonPressed() {
     Navigator.maybePop(context);
   }
-
   void _handlePopOfPopScope(bool didPop, Object? result) {
-    final notesContext = context.read<NotesListModel>();
-    notesContext.isInStarMode = false;
-    notesContext.assignFromBuffer();
+    context.read<NotesViewModel>().loadNotes();
   }
-
   @override
   void initState() {
     super.initState();
-    context.read<NotesListModel>().isInStarMode = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotesViewModel>().loadStarredNotes();
+    });
   }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(

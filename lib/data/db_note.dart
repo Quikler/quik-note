@@ -3,20 +3,17 @@ import 'package:quik_note/models/note.dart';
 
 Future<int> insertNote(Note note) async {
   final db = await getNotesDb();
-
   return await db.insert('notes', note.toMap());
 }
 
 Future<List<Note>> getNotes([String? where, List<Object?>? whereArgs]) async {
   final db = await getNotesDb();
-
   final List<Map<String, Object?>> noteMaps = await db.query(
     'notes',
     orderBy: 'COALESCE(lastEditedTime, creationTime) desc',
     where: where,
     whereArgs: whereArgs,
   );
-
   return [
     for (final {
           'id': id as int,
@@ -28,19 +25,20 @@ Future<List<Note>> getNotes([String? where, List<Object?>? whereArgs]) async {
         }
         in noteMaps)
       Note(
-        id,
-        title,
-        content,
-        DateTime.parse(creationTime),
-        lastEditedTime == null ? null : DateTime.parse(lastEditedTime),
-        starred == 0 ? false : true,
+        id: id,
+        title: title,
+        content: content,
+        creationTime: DateTime.parse(creationTime),
+        lastEditedTime: lastEditedTime == null
+            ? null
+            : DateTime.parse(lastEditedTime),
+        starred: starred == 0 ? false : true,
       ),
   ];
 }
 
 Future<int> updateNote(Note note) async {
   final db = await getNotesDb();
-
   return await db.update(
     'notes',
     note.toMap(),
@@ -51,13 +49,11 @@ Future<int> updateNote(Note note) async {
 
 Future<int> deleteNote(int id) async {
   final db = await getNotesDb();
-
   return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
 }
 
 Future<int> deleteNotes(List<int> ids) async {
   final db = await getNotesDb();
-
   return await db.delete(
     'notes',
     where: 'id IN (${List.filled(ids.length, '?').join(',')})',

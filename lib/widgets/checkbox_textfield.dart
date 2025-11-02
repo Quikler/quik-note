@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
-
 class CheckboxTextfield extends StatefulWidget {
   final void Function(bool? value)? onChecked;
   final void Function(String value)? onTextChanged;
   final void Function(bool hasFocus)? onTextFocus;
-
   final double? fontSize;
   final String? initialValue;
   final bool isDisabled;
   final bool isChecked;
   final String? hint;
-
   const CheckboxTextfield({
     super.key,
     this.fontSize,
@@ -24,32 +21,25 @@ class CheckboxTextfield extends StatefulWidget {
     this.onTextChanged,
     this.onTextFocus,
   });
-
   @override
   State<StatefulWidget> createState() => _CheckboxTextfieldState();
 }
-
 class _CheckboxTextfieldState extends State<CheckboxTextfield> {
   final _textFocusNode = FocusNode();
-
   _handleChecked(bool? value) {
     widget.onChecked?.call(value);
   }
-
   _handleTextChanged(String value) {
     widget.onTextChanged?.call(value);
   }
-
   @override
   void initState() {
     super.initState();
-
     _textFocusNode.addListener(() {
       final focused = _textFocusNode.hasFocus;
       widget.onTextFocus?.call(focused);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Row(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/current_page_model.dart';
+import 'package:quik_note/viewmodels/navigation_viewmodel.dart';
 import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
@@ -14,17 +14,13 @@ class TodoButton extends StatefulWidget {
 
 class _TodoButtonState extends State<TodoButton> {
   void _handleButtonPress() {
-    context.read<CurrentPageModel>().changePage(PagesEnum.todos);
+    context.read<NavigationViewModel>().navigateToTodos();
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentPageEnum = context
-        .watch<CurrentPageModel>()
-        .currentPage
-        ?.pageEnum;
-
-    final isTodoPage = currentPageEnum == PagesEnum.todos;
+    final navigationViewModel = context.watch<NavigationViewModel>();
+    final isTodoPage = navigationViewModel.currentPage == PagesEnum.todos;
 
     return Container(
       decoration: BoxDecoration(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/todos_list_model.dart';
+import 'package:quik_note/viewmodels/todos_viewmodel.dart';
 import 'package:quik_note/widgets/add_todo_card.dart';
 import 'package:quik_note/widgets/todo_card.dart';
 import 'package:quik_note/wrappers/main_wrapper_margin.dart';
@@ -14,20 +14,22 @@ class TodosList extends StatefulWidget {
 
 class _TodosListState extends State<TodosList> {
   void _loadTodos() async {
-    final todosContext = context.read<TodosListModel>();
-    await todosContext.getParentsWithChildrenFromDb();
+    final todosViewModel = context.read<TodosViewModel>();
+    await todosViewModel.loadTodos();
   }
 
   @override
   void initState() {
     super.initState();
-    _loadTodos();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadTodos();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final todosContext = context.watch<TodosListModel>();
-
+    final todosViewModel = context.watch<TodosViewModel>();
     return SingleChildScrollView(
       child: MainWrapperMargin(
         child: Column(
@@ -35,7 +37,7 @@ class _TodosListState extends State<TodosList> {
           children: [
             Column(
               spacing: 16,
-              children: todosContext.todos.map((todo) {
+              children: todosViewModel.items.map((todo) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 12,
