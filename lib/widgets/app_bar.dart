@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
+import 'package:quik_note/viewmodels/navigation_viewmodel.dart';
 import 'package:quik_note/viewmodels/notes_viewmodel.dart';
+import 'package:quik_note/viewmodels/todos_viewmodel.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/widgets/note_button.dart';
 import 'package:quik_note/widgets/search_bar.dart';
@@ -11,17 +13,26 @@ class AppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarViewModel = context.watch<AppBarViewModel>();
-    void handleSelectedNotesDelete() async {
-      final notesViewModel = context.read<NotesViewModel>();
-      final selectedIds = notesViewModel.selectedNoteIds.toList();
+    final navigationViewModel = context.watch<NavigationViewModel>();
+
+    void handleSelectedItemsDelete() async {
+      final isNotesPage = navigationViewModel.isNotesPage;
+      final selectedIds = isNotesPage
+          ? context.read<NotesViewModel>().selectedNoteIds.toList()
+          : context.read<TodosViewModel>().selectedTodoIds.toList();
+
       if (selectedIds.isEmpty) {
         return;
       }
+
+      final itemType = isNotesPage ? "note" : "todo";
       final dialogTitle = selectedIds.length == 1
-          ? "Delete selected note?"
-          : "Delete selected notes?";
-      final dialogContent =
-          "This notes will be permanently deleted. Wanna proceed?";
+          ? "Delete selected $itemType?"
+          : "Delete selected ${itemType}s?";
+      final dialogContent = isNotesPage
+          ? "These notes will be permanently deleted. Do you want to proceed?"
+          : "These todos will be permanently deleted. Do you want to proceed?";
+
       final dialogResult = await showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -39,8 +50,13 @@ class AppBarWidget extends StatelessWidget {
           ],
         ),
       );
+
       if (dialogResult == 'Delete') {
-        await notesViewModel.deleteSelectedNotes();
+        if (isNotesPage) {
+          await context.read<NotesViewModel>().deleteSelectedNotes();
+        } else {
+          await context.read<TodosViewModel>().deleteSelectedTodos();
+        }
         appBarViewModel.exitSelectMode();
       }
     }
@@ -66,14 +82,17 @@ class AppBarWidget extends StatelessWidget {
               color: Colors.white,
               icon: Icon(Icons.close, size: 28),
               onPressed: () {
-                final notesViewModel = context.read<NotesViewModel>();
-                notesViewModel.clearSelection();
+                if (navigationViewModel.isNotesPage) {
+                  context.read<NotesViewModel>().clearSelection();
+                } else {
+                  context.read<TodosViewModel>().clearSelection();
+                }
                 context.read<AppBarViewModel>().exitSelectMode();
               },
             ),
             IconButton(
               color: Colors.white,
-              onPressed: handleSelectedNotesDelete,
+              onPressed: handleSelectedItemsDelete,
               icon: Icon(Icons.delete),
             ),
           ],

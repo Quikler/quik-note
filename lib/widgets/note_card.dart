@@ -24,7 +24,6 @@ class NoteCard extends StatefulWidget {
 }
 class _NoteCardState extends State<NoteCard> {
   final BorderRadius _borderRadius = BorderRadius.all(Radius.circular(12));
-  bool _isStarred = false;
   String _getNoteTitle() {
     final n = widget.note;
     if (n.title.isNullOrWhiteSpace) {
@@ -74,16 +73,7 @@ class _NoteCardState extends State<NoteCard> {
     }
   }
   void _handleStarPress() async {
-    final value = !_isStarred;
-    setState(() {
-      _isStarred = value;
-    });
     await context.read<NotesViewModel>().toggleStarred(widget.note);
-  }
-  @override
-  void initState() {
-    super.initState();
-    _isStarred = widget.note.starred;
   }
   @override
   Widget build(BuildContext context) {
@@ -155,7 +145,7 @@ class _NoteCardState extends State<NoteCard> {
                     ? Checkbox(onChanged: _handleCheck, value: isChecked)
                     : IconButton(
                         icon: Icon(
-                          _isStarred ? Icons.star : Icons.star_outline,
+                          widget.note.starred ? Icons.star : Icons.star_outline,
                           color: Colors.pink,
                         ),
                         onPressed: _handleStarPress,

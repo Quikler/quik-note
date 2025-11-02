@@ -2,9 +2,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/core/service_locator.dart';
+import 'package:quik_note/core/note_cache.dart';
+import 'package:quik_note/core/todo_cache.dart';
 import 'package:quik_note/pages/create_note_form_page.dart';
 import 'package:quik_note/pages/create_todo_form_page.dart';
+import 'package:quik_note/repositories/note_repository.dart';
+import 'package:quik_note/repositories/note_repository_impl.dart';
+import 'package:quik_note/repositories/todo_repository.dart';
+import 'package:quik_note/repositories/todo_repository_impl.dart';
+import 'package:quik_note/services/note_form_service.dart';
+import 'package:quik_note/services/todo_form_service.dart';
 import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
 import 'package:quik_note/viewmodels/navigation_viewmodel.dart';
 import 'package:quik_note/viewmodels/notes_viewmodel.dart';
@@ -25,16 +32,45 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  ServiceLocator.setup();
   runApp(
     AnnotatedRegion<SystemUiOverlayStyle>(
       value: appBarStyle,
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => ServiceLocator.get<NotesViewModel>()),
-          ChangeNotifierProvider(create: (_) => ServiceLocator.get<TodosViewModel>()),
-          ChangeNotifierProvider(create: (_) => ServiceLocator.get<AppBarViewModel>()),
-          ChangeNotifierProvider(create: (_) => ServiceLocator.get<NavigationViewModel>()),
+          // Repositories (singletons)
+          Provider<NoteRepository>(
+            create: (_) => const NoteRepositoryImpl(),
+          ),
+          Provider<TodoRepository>(
+            create: (_) => const TodoRepositoryImpl(),
+          ),
+          // Caches (singletons)
+          Provider<NoteCache>(
+            create: (_) => NoteCache(),
+          ),
+          Provider<TodoCache>(
+            create: (_) => TodoCache(),
+          ),
+          // Services (depend on repositories and caches)
+          ProxyProvider2<NoteRepository, NoteCache, NoteFormService>(
+            update: (_, repository, cache, __) => NoteFormService(repository, cache),
+          ),
+          ProxyProvider2<TodoRepository, TodoCache, TodoFormService>(
+            update: (_, repository, cache, __) => TodoFormService(repository, cache),
+          ),
+          // ViewModels
+          ChangeNotifierProvider<NotesViewModel>(
+            create: (context) => NotesViewModel(context.read<NoteRepository>()),
+          ),
+          ChangeNotifierProvider<TodosViewModel>(
+            create: (context) => TodosViewModel(context.read<TodoRepository>()),
+          ),
+          ChangeNotifierProvider<AppBarViewModel>(
+            create: (_) => AppBarViewModel(),
+          ),
+          ChangeNotifierProvider<NavigationViewModel>(
+            create: (_) => NavigationViewModel(),
+          ),
         ],
         child: const MyApp(),
       ),
