@@ -3,15 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/models/note.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
-
 class EditNoteForm extends StatefulWidget {
   final Note note;
-
   final TextEditingController titleController;
   final TextEditingController contentController;
   final FocusNode titleFocusNode;
   final FocusNode contentFocusNode;
-
   const EditNoteForm({
     super.key,
     required this.titleController,
@@ -20,25 +17,20 @@ class EditNoteForm extends StatefulWidget {
     required this.contentFocusNode,
     required this.titleFocusNode,
   });
-
   @override
   State<StatefulWidget> createState() {
     return _EditNoteFormState();
   }
 }
-
 class _EditNoteFormState extends State<EditNoteForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   void _handleTitleSubmitted(String? value) {
     widget.contentFocusNode.requestFocus();
   }
-
   @override
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Form(

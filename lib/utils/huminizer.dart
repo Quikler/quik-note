@@ -1,9 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:quik_note/utils/helpers.dart';
-
 String getHuminizedDate(DateTime dateTime) {
   final now = DateTime.now();
-
   if (dateTime.isToday) {
     return "Today";
   } else if (dateTime.isYesterday) {

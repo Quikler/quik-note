@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/current_page_model.dart';
+import 'package:quik_note/viewmodels/navigation_viewmodel.dart';
 import 'package:quik_note/pages/pages_enum.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
-
 class NoteButton extends StatefulWidget {
   const NoteButton({super.key});
-
   @override
   State<StatefulWidget> createState() => _NoteButtonState();
 }
-
 class _NoteButtonState extends State<NoteButton> {
   void _handleButtonPress() {
-    context.read<CurrentPageModel>().changePage(PagesEnum.notes);
+    context.read<NavigationViewModel>().navigateToNotes();
   }
-
   @override
   Widget build(BuildContext context) {
-    final currentPageEnum = context
-        .watch<CurrentPageModel>()
-        .currentPage
-        ?.pageEnum;
-
-    final isNotePage = currentPageEnum == PagesEnum.notes;
-
+    final navigationViewModel = context.watch<NavigationViewModel>();
+    final isNotePage = navigationViewModel.currentPage == PagesEnum.notes;
     return Container(
       decoration: BoxDecoration(
         border: BoxBorder.all(

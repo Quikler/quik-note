@@ -1,40 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db_note.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/forms/create_note_form.dart';
 import 'package:quik_note/models/note.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/wrappers/note_form_wrapper.dart';
 import 'package:quik_note/wrappers/responsive_text.dart';
-
 import 'package:quik_note/wrappers/main_wrapper.dart';
-
 class CreateNoteFormPage extends StatefulWidget {
   const CreateNoteFormPage({super.key});
-
   @override
   State<StatefulWidget> createState() => _CreateNoteFormPageState();
 }
-
 class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
   static const String _untitled = "Untitled";
   String _appTitle = _untitled;
   bool _isSaveButtonVisible = false;
-
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-
   final FocusNode contentFocusNode = FocusNode();
-
   @override
   void initState() {
     super.initState();
-
-    // Listen for title change
     _titleController.addListener(() {
       final value = _titleController.text;
       setState(() {
@@ -49,8 +39,6 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
         }
       });
     });
-
-    // Listen for content change
     _contentController.addListener(() {
       final value = _contentController.text;
       setState(() {
@@ -62,50 +50,37 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       });
     });
   }
-
   void _handleBackButtonPressed() {
     _pop();
   }
-
   void _handleSaveButtonPressed() {
     _pop();
   }
-
   void _handlePopOfPopScope(bool didPop, Object? result) async {
     await _insertNewNoteWithPop();
   }
-
   void _pop() {
     Navigator.maybePop(context);
   }
-
   Future<void> _insertNewNote() async {
     final title = _titleController.text, content = _contentController.text;
     if (title.isNullOrWhiteSpace && content.isNullOrWhiteSpace) {
       return;
     }
-
-    final newNote = Note(null, title, content, DateTime.now(), null);
-    final newNoteId = await insertNote(newNote);
-
-    final newNoteWithId = Note(
-      newNoteId,
-      newNote.title,
-      newNote.content,
-      newNote.creationTime,
-      null,
+    final newNote = Note(
+      title: title,
+      content: content,
+      creationTime: DateTime.now(),
+      starred: false,
     );
-
     if (mounted) {
-      context.read<NotesListModel>().insertStartNote(newNoteWithId);
+      await context.read<NotesViewModel>().createNote(newNote);
     }
   }
-
   Future<void> _insertNewNoteWithPop() async {
     await _insertNewNote();
     _pop();
   }
-
   void _showMoreMenu(TapDownDetails details) async {
     final posOffset = details.globalPosition;
     await showMenu(
@@ -133,12 +108,10 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       ],
     );
   }
-
   void _handleCopy() async {
     await Clipboard.setData(ClipboardData(text: _contentController.text));
     if (mounted) {
       contentFocusNode.requestFocus();
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
@@ -150,27 +123,21 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       );
     }
   }
-
   void _handlePaste() async {
     final clipboardData = await Clipboard.getData("text/plain");
     if (clipboardData != null) {
       final cursorPos = _contentController.selection.base.offset;
-
       final textBeforeCursor = _contentController.text.substring(0, cursorPos);
       final textAfterCursor = _contentController.text.substring(cursorPos);
-
       final textBeforeAndPasted = textBeforeCursor + clipboardData.text!;
       final updatedText = textBeforeAndPasted + textAfterCursor;
-
       _contentController.value = _contentController.value.copyWith(
         text: updatedText,
         selection: TextSelection.collapsed(offset: textBeforeAndPasted.length),
       );
     }
-
     if (mounted) {
       contentFocusNode.requestFocus();
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
@@ -182,7 +149,6 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -191,7 +157,6 @@ class _CreateNoteFormPageState extends State<CreateNoteFormPage> {
         appBar: AppBar(
           toolbarHeight: noteFormPageAppBarHeight(),
           actions: [
-            // The rightest button in actions
             Padding(
               padding: EdgeInsets.only(right: 8),
               child: InkWell(

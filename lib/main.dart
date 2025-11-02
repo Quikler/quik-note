@@ -1,53 +1,49 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/app_bar_model.dart';
-import 'package:quik_note/models/notifiers/current_page_model.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
-import 'package:quik_note/models/notifiers/todos_list_model.dart';
-import 'package:quik_note/pages/pages_enum.dart';
+import 'package:quik_note/core/service_locator.dart';
+import 'package:quik_note/pages/create_note_form_page.dart';
+import 'package:quik_note/pages/create_todo_form_page.dart';
+import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
+import 'package:quik_note/viewmodels/navigation_viewmodel.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
+import 'package:quik_note/viewmodels/todos_viewmodel.dart';
 import 'package:quik_note/widgets/app_bar.dart';
 import 'package:quik_note/widgets/bottom_bar.dart';
-
+import 'package:quik_note/widgets/notes_list.dart';
+import 'package:quik_note/widgets/todos_list.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
 import 'wrappers/main_wrapper.dart';
-
-final appBarStyle = SystemUiOverlayStyle(
+const appBarStyle = SystemUiOverlayStyle(
   statusBarIconBrightness: Brightness.light,
   statusBarBrightness: Brightness.dark,
 );
-
-Future main() async {
-  // Initialize FFI
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-
+  ServiceLocator.setup();
   runApp(
     AnnotatedRegion<SystemUiOverlayStyle>(
       value: appBarStyle,
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => NotesListModel()),
-          ChangeNotifierProvider(create: (_) => TodosListModel()),
-          ChangeNotifierProvider(create: (_) => AppBarModel()),
-          ChangeNotifierProvider(create: (_) => CurrentPageModel()),
-        ], // TODO: make this shit not global across whole app if possible of course
-        child: MyApp(),
+          ChangeNotifierProvider(create: (_) => ServiceLocator.get<NotesViewModel>()),
+          ChangeNotifierProvider(create: (_) => ServiceLocator.get<TodosViewModel>()),
+          ChangeNotifierProvider(create: (_) => ServiceLocator.get<AppBarViewModel>()),
+          ChangeNotifierProvider(create: (_) => ServiceLocator.get<NavigationViewModel>()),
+        ],
+        child: const MyApp(),
       ),
     ),
   );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   static final homePageStateKey = GlobalKey<_MyHomePageState>();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,85 +51,77 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         appBarTheme: AppBarTheme(systemOverlayStyle: appBarStyle),
-        //scaffoldBackgroundColor: Colors.black,
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: MyHomePage(key: homePageStateKey, title: 'quik-note'),
     );
   }
 }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> {
   void _handlePopOfPopScope(bool didPop, Object? result) {
-    final appBarContext = context.read<AppBarModel>();
-    if (appBarContext.mode == AppBarMode.select) {
-      appBarContext.toggleMode(AppBarMode.initial);
+    final appBarViewModel = context.read<AppBarViewModel>();
+    if (appBarViewModel.isSelectMode) {
+      appBarViewModel.exitSelectMode();
+      final navigationViewModel = context.read<NavigationViewModel>();
+      if (navigationViewModel.isNotesPage) {
+        context.read<NotesViewModel>().clearSelection();
+      } else {
+        context.read<TodosViewModel>().clearSelection();
+      }
       return;
     }
-
     Navigator.maybePop(context);
   }
-
   void _handleFloatingButtonPressed() {
-    final currentPageContext = context.read<CurrentPageModel>();
-
+    final navigationViewModel = context.read<NavigationViewModel>();
+    final formPage = navigationViewModel.isNotesPage
+        ? const CreateNoteFormPage()
+        : const CreateTodoFormPage();
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            Material(child: currentPageContext.currentPage!.formPageToNavigate),
-      ),
+      MaterialPageRoute(builder: (context) => Material(child: formPage)),
     );
   }
-
   @override
   void initState() {
     super.initState();
-    context.read<CurrentPageModel>().initPage(PagesEnum.notes);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NavigationViewModel>().navigateToNotes();
+      context.read<NotesViewModel>().loadNotes();
+      context.read<TodosViewModel>().loadTodos();
+    });
   }
-
   @override
   Widget build(BuildContext context) {
-    final appBarContext = context.watch<AppBarModel>();
-    bool canPop = appBarContext.mode == AppBarMode.initial;
-
-    final currentPageContext = context.watch<CurrentPageModel>();
-
+    final appBarViewModel = context.watch<AppBarViewModel>();
+    final navigationViewModel = context.watch<NavigationViewModel>();
+    final canPop = appBarViewModel.isInitialMode;
+    final currentPageWidget = navigationViewModel.isNotesPage
+        ? const NotesList()
+        : const TodosList();
     return PopScope(
       canPop: canPop,
       onPopInvokedWithResult: _handlePopOfPopScope,
       child: Scaffold(
-        bottomNavigationBar: BottomBar(),
+        bottomNavigationBar: const BottomBar(),
         body: MainWrapper(
           child: Column(
             children: [
-              Align(alignment: Alignment.topCenter, child: AppBarWidget()),
-              Expanded(child: currentPageContext.currentPage!.widget!),
-              //Expanded(
-              //child: CarouselSlider(
-              //disableGesture: true,
-              //items: carouselPages,
-              //options: CarouselOptions(
-              //height: double.infinity,
-              //viewportFraction: 1,
-              //enableInfiniteScroll: false,
-              //),
-              //),
-              //),
+              const Align(
+                alignment: Alignment.topCenter,
+                child: AppBarWidget(),
+              ),
+              Expanded(child: currentPageWidget),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _handleFloatingButtonPressed,
-          tooltip: currentPageContext.currentPage!.navigateTooltip,
+          tooltip: navigationViewModel.fabTooltip,
           child: const Icon(Icons.add),
         ),
       ),

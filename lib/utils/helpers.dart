@@ -1,23 +1,19 @@
 extension StringExtentions on String? {
   bool get isNullOrWhiteSpace => this?.trim().isEmpty ?? true;
 }
-
 extension DateTimeExtensions on DateTime {
   bool get isToday {
     final now = DateTime.now();
     return now.day == day && now.month == month && now.year == year;
   }
-
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
     return yesterday.day == day &&
         yesterday.month == month &&
         yesterday.year == year;
   }
-
   bool isBetween(DateTime from, DateTime to) => isAfter(from) && isBefore(to);
 }
-
 extension IterableExtensions<E> on Iterable<E> {
   Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
     <K, List<E>>{},
@@ -25,11 +21,9 @@ extension IterableExtensions<E> on Iterable<E> {
         map..putIfAbsent(keyFunction(element), () => <E>[]).add(element),
   );
 }
-
 extension IntExtensions on int {
   bool toBool() => this == 0 ? false : true;
 }
-
 extension BoolExtensions on bool {
   int toInt() => this ? 1 : 0;
 }

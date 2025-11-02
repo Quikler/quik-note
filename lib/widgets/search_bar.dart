@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/svgs/common.dart';
-import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 
 class SearchBarWidget extends StatefulWidget {
@@ -15,45 +14,13 @@ class SearchBarWidget extends StatefulWidget {
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
   void _handleChange(String? value) {
-    final noteContext = context.read<NotesListModel>();
+    final notesViewModel = context.read<NotesViewModel>();
 
-    if (value.isNullOrWhiteSpace || value == null) {
-      noteContext.assignFromBuffer();
-      noteContext.titleIndexes.clear();
-      noteContext.contentIndexes.clear();
-      return;
+    if (value == null || value.isEmpty) {
+      notesViewModel.clearSearch();
+    } else {
+      notesViewModel.searchNotes(value);
     }
-
-    noteContext.whereInBuffer((n) {
-      // if title and content is not null or empty
-      if (!n.title.isNullOrWhiteSpace && !n.content.isNullOrWhiteSpace) {
-        final isTitleContainsValue = n.title!.contains(value);
-        final isContentContainsValue = n.content!.contains(value);
-
-        if (isTitleContainsValue) {
-          final indexOffset = value.length + n.title!.indexOf(value);
-          noteContext.titleIndexes[n.id!] = indexOffset;
-        } else if (isContentContainsValue) {
-          final indexOffset = value.length + n.content!.indexOf(value);
-          noteContext.contentIndexes[n.id!] = indexOffset;
-        }
-
-        return isTitleContainsValue || isContentContainsValue;
-      }
-
-      // if title is null or empty (means that content is not null or empty)
-      if (n.title.isNullOrWhiteSpace) {
-        final indexOffset = value.length + n.content!.indexOf(value);
-        noteContext.contentIndexes[n.id!] = indexOffset;
-        return n.content!.contains(value);
-      }
-
-      final indexOffset = value.length + n.title!.indexOf(value);
-      noteContext.titleIndexes[n.id!] = indexOffset;
-      return n.title!.contains(value);
-    });
-
-    noteContext.isInSearchMode = true;
   }
 
   @override

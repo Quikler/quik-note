@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quik_note/data/db_note.dart';
-import 'package:quik_note/models/notifiers/app_bar_model.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/utils/widget_helpers.dart';
 import 'package:quik_note/widgets/note_button.dart';
 import 'package:quik_note/widgets/search_bar.dart';
 import 'package:quik_note/widgets/todo_button.dart';
-
 class AppBarWidget extends StatelessWidget {
   const AppBarWidget({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final appBarContext = context.watch<AppBarModel>();
-
+    final appBarViewModel = context.watch<AppBarViewModel>();
     void handleSelectedNotesDelete() async {
-      final notesContext = context.read<NotesListModel>();
-      final ids = notesContext.selectedNotes.keys.toList();
-      if (ids.isEmpty) {
+      final notesViewModel = context.read<NotesViewModel>();
+      final selectedIds = notesViewModel.selectedNoteIds.toList();
+      if (selectedIds.isEmpty) {
         return;
       }
-
-      final dialogTitle = ids.length == 1
+      final dialogTitle = selectedIds.length == 1
           ? "Delete selected note?"
           : "Delete selected notes?";
       final dialogContent =
           "This notes will be permanently deleted. Wanna proceed?";
-
       final dialogResult = await showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -45,22 +39,13 @@ class AppBarWidget extends StatelessWidget {
           ],
         ),
       );
-
       if (dialogResult == 'Delete') {
-        final count = await deleteNotes(ids);
-
-        if (count > 0) {
-          notesContext.clearSelected();
-          notesContext.deleteNotes(ids);
-          appBarContext.toggleMode(AppBarMode.initial);
-        }
+        await notesViewModel.deleteSelectedNotes();
+        appBarViewModel.exitSelectMode();
       }
     }
-
     List<Widget> children = [];
-    if (appBarContext.mode == AppBarMode.initial) {
-      final notesContext = context.read<NotesListModel>();
-      notesContext.selectedNotes.clear();
+    if (!appBarViewModel.isSelectMode) {
       children = [
         SearchBarWidget(),
         Row(
@@ -72,7 +57,7 @@ class AppBarWidget extends StatelessWidget {
           ],
         ),
       ];
-    } else if (appBarContext.mode == AppBarMode.select) {
+    } else {
       children = [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,7 +66,9 @@ class AppBarWidget extends StatelessWidget {
               color: Colors.white,
               icon: Icon(Icons.close, size: 28),
               onPressed: () {
-                context.read<AppBarModel>().toggleMode(AppBarMode.initial);
+                final notesViewModel = context.read<NotesViewModel>();
+                notesViewModel.clearSelection();
+                context.read<AppBarViewModel>().exitSelectMode();
               },
             ),
             IconButton(
@@ -93,7 +80,6 @@ class AppBarWidget extends StatelessWidget {
         ),
       ];
     }
-
     return Container(
       padding: EdgeInsets.only(
         top: deviceHeight(context) * 0.03 + deviceStatusBar(context),

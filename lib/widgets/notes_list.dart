@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quik_note/fill/custom_colors.dart';
 import 'package:quik_note/models/note.dart';
-import 'package:quik_note/models/notifiers/app_bar_model.dart';
-import 'package:quik_note/models/notifiers/notes_list_model.dart';
+import 'package:quik_note/viewmodels/app_bar_viewmodel.dart';
+import 'package:quik_note/viewmodels/notes_viewmodel.dart';
 import 'package:quik_note/utils/helpers.dart';
 import 'package:quik_note/utils/huminizer.dart';
 import 'package:quik_note/widgets/add_note_card.dart';
@@ -20,46 +20,39 @@ class NotesList extends StatefulWidget {
 
 class _NoteListState extends State<NotesList> {
   void _loadNotes() async {
-    final notesContext = context.read<NotesListModel>();
-    if (notesContext.isInStarMode) {
-      await notesContext.getStarredFromDb();
-      return;
-    }
-
-    await notesContext.getFromDb();
+    final notesViewModel = context.read<NotesViewModel>();
+    await notesViewModel.loadNotes();
   }
 
   void _handleDeleteNote(int? id) {
     if (id != null) {
-      context.read<NotesListModel>().deleteNote(id);
+      context.read<NotesViewModel>().deleteNote(id);
     }
   }
 
   void _handleLongPress(Note note) {
-    final appBarContext = context.read<AppBarModel>();
-    appBarContext.toggleMode(AppBarMode.select);
+    final appBarViewModel = context.read<AppBarViewModel>();
+    appBarViewModel.enterSelectMode();
 
-    context.read<NotesListModel>().selectedNotes[note.id!] = note;
+    if (note.id != null) {
+      context.read<NotesViewModel>().toggleNoteSelection(note.id!);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadNotes();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNotes();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final appBarMode = context.watch<AppBarModel>().mode;
+    final appBarViewModel = context.watch<AppBarViewModel>();
+    final notesViewModel = context.watch<NotesViewModel>();
 
-    final notesContext = context.watch<NotesListModel>();
-
-    List<Note> children;
-    if (notesContext.isInStarMode) {
-      children = notesContext.starredNotes;
-    } else {
-      children = notesContext.notes;
-    }
+    final children = notesViewModel.displayedNotes;
 
     return SingleChildScrollView(
       child: MainWrapperMargin(
@@ -99,7 +92,7 @@ class _NoteListState extends State<NotesList> {
                                     onLongPress: () => _handleLongPress(n),
                                     child: NoteCard(
                                       isCheckBoxVisible:
-                                          appBarMode == AppBarMode.select,
+                                          appBarViewModel.isSelectMode,
                                       note: n,
                                       onNoteDelete: _handleDeleteNote,
                                     ),
